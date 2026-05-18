@@ -19,7 +19,7 @@ export default class Level1 {
         this.container.innerHTML = `
             <div id="game-viewport" class="viewport">
                 <div class="wide-level-content">
-                    <img src="https://via.placeholder.com/3000x1080/333/fff?text=Long+Level+1+Background" alt="Level 1">
+                    <img src="assets/images/Untitled_Artwork.png" alt="Level 1">
                 </div>
                 <button id="next-level-btn">המשך לשלב הבא</button>
             </div>
