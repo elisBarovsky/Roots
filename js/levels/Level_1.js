@@ -1,3 +1,4 @@
+import Level_2 from './Level_2.js';
 export default class Level1 {
     constructor(container) {
         this.container = container;
@@ -81,9 +82,17 @@ export default class Level1 {
     }
 
     onNextClick() {
-       alert("כפתור נלחץ! כאן אמור להיטען שלב 2.");
-        // בהמשך נקרא מכאן ל-LevelManager שיעבור לשלב הבא
-        // this.destroy();
+        this.container.classList.add('fade-out');
+
+        setTimeout(() => {
+            this.destroy();
+
+            const level2 = new Level_2(this.container);
+            level2.init();
+
+            this.container.classList.remove('fade-out');
+
+        }, 800);
     }
 
     destroy() {
