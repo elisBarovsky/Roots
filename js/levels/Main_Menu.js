@@ -19,10 +19,13 @@ export default class Main_Menu {
     }
 
     onStartClick() {
-        this.destroy(); 
-
-        const level1 = new Level_1(this.container);
-        level1.init();
+        this.container.classList.add('fade-out');
+        setTimeout(() => {
+            this.destroy();
+            const level1 = new Level_1(this.container);
+            level1.init();
+            this.container.classList.remove('fade-out');
+        }, 800);
     }
 
     destroy() {
