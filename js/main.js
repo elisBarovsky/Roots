@@ -1,8 +1,6 @@
-import Level1 from './levels/Level_1.js';
+import Main_Menu from './levels/Main_Menu.js';
 
-// תופסים את הקונטיינר הראשי
 const gameContainer = document.getElementById('game-container');
 
-// יוצרים מופע של השלב הראשון ומפעילים אותו
-const level1 = new Level1(gameContainer);
-level1.init();
+const mainMenu = new Main_Menu(gameContainer);
+mainMenu.init();
