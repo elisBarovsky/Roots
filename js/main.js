@@ -4,3 +4,9 @@ const gameContainer = document.getElementById('game-container');
 
 const mainMenu = new Main_Menu(gameContainer);
 mainMenu.init();
+
+window.gameState = {
+    task1_completed: false,
+    task2_completed: false,
+    task3_completed: false
+};

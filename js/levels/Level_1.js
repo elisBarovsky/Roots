@@ -26,11 +26,9 @@ export default class Level1 {
                 <button id="next-level-btn">המשך בסיפור</button>
             </div>
         `;
-        // 2. תפיסת האלמנטים
         this.viewport = document.getElementById('game-viewport');
         this.nextBtn = document.getElementById('next-level-btn');
 
-        // 3. הצמדת מאזינים
         this.viewport.addEventListener('mousedown', this.onMouseDown);
         this.viewport.addEventListener('mouseleave', this.onMouseLeave);
         this.viewport.addEventListener('mouseup', this.onMouseUp);
@@ -90,9 +88,9 @@ export default class Level1 {
             const level2 = new Level_2(this.container);
             level2.init();
 
-            this.container.classList.remove('fade-out');
+            //this.container.classList.remove('fade-out');
 
-        }, 800);
+        }, 1000);
     }
 
     destroy() {

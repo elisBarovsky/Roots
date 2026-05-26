@@ -9,7 +9,7 @@ export default class Main_Menu {
     init() {
         this.container.innerHTML = `
             <div class="main-menu-wrapper">
-                <h1 class="game-title">שם המשחק שלכם</h1>
+                <h1 class="game-title">שם המשחק</h1>
                 <button id="start-game-btn" class="menu-btn">התחל משחק</button>
             </div>
         `;
@@ -25,7 +25,7 @@ export default class Main_Menu {
             const level1 = new Level_1(this.container);
             level1.init();
             this.container.classList.remove('fade-out');
-        }, 800);
+        }, 1000);
     }
 
     destroy() {
