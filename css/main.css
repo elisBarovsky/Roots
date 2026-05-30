@@ -175,6 +175,21 @@ body, html {
     touch-action: none;
 }
 
+.shadow-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    /* שחור חצי שקוף שיוצר אפקט של צל אמיתי על הרקע */
+    background-color: rgba(0, 0, 0, 0.45); 
+    pointer-events: none; /* קריטי כדי שלא יחסום לחיצות וגרירות על העציץ */
+    z-index: 1; /* יושב מעל תמונת הרקע אבל מתחת לעציץ ולכלים */
+    
+    /* חותך את השכבה בדיוק לפי משוואת האלכסון שלך */
+    clip-path: polygon(0% -40.67%, 100% 153.33%, 100% 100%, 0% 100%);
+    }
+
 .draggable-item {
     position: absolute;
     width: 18%;
@@ -388,4 +403,19 @@ body, html {
     background-color: #fff;
     color: #000;
     transform: scale(1.05);
+}
+
+/* שכבת הדיבאג של אזור הצל */
+.shadow-zone-debug {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255, 0, 0, 0.3); /* אדום עם 30% שקיפות */
+    pointer-events: none; /* קריטי! שהשכבה לא תחסום לחיצות וגרירות */
+    z-index: 1; /* יושב מעל הרקע אבל מתחת לעציץ ולכלים */
+    
+    /* הטריק החכם: חותך את ה-div בצורה של משולש/אלכסון לפי הנוסחה שלך */
+    clip-path: polygon(0% 33.33%, 100% 133.33%, 100% 100%, 0% 100%);
 }

@@ -34,6 +34,8 @@ export default class Task_1 {
     init() {
         this.container.innerHTML = `
             <div class="task1-wrapper" id="task1-wrapper">
+                <div class="shadow-overlay"></div>
+
                 <button class="back-to-hub-btn" id="back-hub-btn" title="חזור לחצר">↩ חזרה</button>
 
                 <img src="assets/images/HintBook.png" class="hint-icon" id="hint-btn">
@@ -234,7 +236,6 @@ export default class Task_1 {
         this.waterEffect.style.top = `${clientY - rect.top + 30}px`;
         this.waterEffect.classList.add('active');
 
- 
         if (this.wateringProgress === undefined) {
             this.wateringProgress = 0;
         }
