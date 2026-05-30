@@ -17,9 +17,9 @@ export default class Task_1 {
         this.toolRotation = 0;
 
         this.potImages = {
-            0: 'assets/images/items/DryPot.png',
-            1: 'assets/images/items/SproutingPot.png',
-            2: 'assets/images/items/FloweringPot.png'
+            0: 'assets/images/Task_1/items/DryPot.png',
+            1: 'assets/images/Task_1/items/SproutingPot.png',
+            2: 'assets/images/Task_1/items/FloweringPot.png'
         };
 
         this.toggleHint = this.toggleHint.bind(this);
@@ -119,7 +119,7 @@ export default class Task_1 {
 
             this.wateringProgress = 0;
 
-            console.log(`העציץ בצל והוא נובל! שלב: ${this.growthStage}`);
+         //   console.log(`העציץ בצל והוא נובל! שלב: ${this.growthStage}`);
 
             if (this.growthStage < 2) {
                 if (!window.gameState) window.gameState = {};
@@ -142,7 +142,7 @@ export default class Task_1 {
         if (this.activeDraggedTool) {
             this.resetActiveTool();
         }
-
+        this.item.classList.add('pot-inactive');
         this.activeDraggedTool = tool;
 
         this.toolPlaceholder = document.createElement('div');
@@ -191,7 +191,7 @@ export default class Task_1 {
         if (!this.activeDraggedTool) return;
         this.activeDraggedTool.style.left = `${clientX}px`;
         this.activeDraggedTool.style.top = `${clientY}px`;
-        this.activeDraggedTool.style.transform = `translate(-50%, -50%) scale(1.2) rotate(${this.toolRotation}deg)`;
+        this.activeDraggedTool.style.setProperty('transform', `translate(-50%, -50%) scale(2.0) rotate(${this.toolRotation}deg)`, 'important');
     }
 
     onPointerUp(e) {
@@ -217,7 +217,7 @@ export default class Task_1 {
                     this.triggerWateringPour(e.clientX, e.clientY);
                     return;
                 } else {
-                    console.log("העציץ חייב להיות בצד המואר כדי לגדול!");
+                  //  console.log("העציץ חייב להיות בצד המואר כדי לגדול!");
                 }
             }
         }
@@ -229,7 +229,8 @@ export default class Task_1 {
         if (this.wateringTimeout) clearTimeout(this.wateringTimeout);
 
         this.toolRotation = -45;
-        this.activeDraggedTool.style.transform = `translate(-50%, -50%) scale(1.2) rotate(${this.toolRotation}deg)`;
+        this.activeDraggedTool.style.setProperty('transform', `translate(-50%, -50%) scale(2.0) rotate(${this.toolRotation}deg)`, 'important');
+
 
         const rect = this.wrapper.getBoundingClientRect();
         this.waterEffect.style.left = `${clientX - rect.left - 20}px`;
@@ -241,7 +242,7 @@ export default class Task_1 {
         }
 
         this.wateringProgress += 25;
-        console.log(`מד השקיה: ${this.wateringProgress}% `);
+       // console.log(`מד השקיה: ${this.wateringProgress}% `);
 
         if (this.wateringProgress >= 100) {
             this.wateringProgress = 0; 
@@ -249,12 +250,15 @@ export default class Task_1 {
             if (this.growthStage < 2) {
                 this.growthStage++;
                 this.item.src = this.potImages[this.growthStage];
-                console.log(`יש! העציץ גדל לשלב: ${this.growthStage} `);
+                //console.log(`יש! העציץ גדל לשלב: ${this.growthStage} `);
 
                 if (this.growthStage === 2) {
-                    console.log(" העציץ פרח לחלוטין! ");
+               //     console.log(" העציץ פרח לחלוטין! ");
+                    this.spawnConfetti(this.item);
+    
                     if (!window.gameState) window.gameState = {};
                     window.gameState.task1_completed = true;
+                    this.resetActiveTool();
                 }
             }
         }
@@ -267,9 +271,29 @@ export default class Task_1 {
     stopWateringEffect() {
         this.toolRotation = 0;
         if (this.activeDraggedTool) {
-            this.activeDraggedTool.style.transform = `translate(-50%, -50%) scale(1.2) rotate(${this.toolRotation}deg)`;
+            this.activeDraggedTool.style.transform = `translate(-50%, -50%) scale(2.0) rotate(${this.toolRotation}deg)`;
         }
         this.waterEffect.classList.remove('active');
+    }
+
+    spawnConfetti() {
+        for (let i = 0; i < 60; i++) { 
+            const p = document.createElement('div');
+            p.className = 'confetti';
+            p.style.left = `${Math.random() * window.innerWidth}px`;
+            p.style.top = `-20px`; 
+            p.style.backgroundColor = `hsl(${Math.random() * 360}, 70%, 60%)`;
+            document.body.appendChild(p);
+        
+            p.animate([
+                { transform: `translate(0, 0) scale(1)`, opacity: 1 },
+                { transform: `translate(${(Math.random()-0.5)*200}px, ${window.innerHeight}px) scale(0)`, opacity: 0 }
+            ], {
+                duration: 2000 + Math.random() * 1000,
+                easing: 'linear'
+            });
+            setTimeout(() => p.remove(), 3000);
+        }
     }
 
     resetActiveTool() {
@@ -278,6 +302,7 @@ export default class Task_1 {
         this.stopWateringEffect();
         if (this.wateringTimeout) clearTimeout(this.wateringTimeout);
 
+        this.item.classList.remove('pot-inactive');
         this.activeDraggedTool.style.position = '';
         this.activeDraggedTool.style.zIndex = '';
         this.activeDraggedTool.style.pointerEvents = '';

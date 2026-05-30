@@ -77,6 +77,23 @@ body, html {
     user-select: none;
 }
 
+.hub-item {
+    position: absolute;
+    cursor: pointer;
+    z-index: 10;
+    transition: transform 0.2s ease;
+    object-fit: contain;
+}
+
+.hub-item:not(.completed):hover {
+    transform: scale(1.05);
+}
+
+.hub-item.completed {
+    cursor: default;
+    opacity: 0.8; /* אפשר להוסיף שקיפות עדינה למראה "סגור" */
+}
+
 
 .level-wrapper {
     position: relative;
@@ -114,9 +131,9 @@ body, html {
 .hub-wrapper {
     position: relative;
     width: 100vw;
-/*    max-width: calc(100vh * (16 / 9));*/
+/* max-width: calc(100vh * (16 / 9));*/
     height: 100vh;
-/*    max-height: calc(100vw * (9 / 16));*/
+/* max-height: calc(100vw * (9 / 16));*/
     margin: auto;
     background-color: #222;
     overflow: hidden;
@@ -167,7 +184,7 @@ body, html {
     position: relative;
     width: 100vw;
     height: 100vh;
-    background-image: url('../assets/images/BG_Task_1.png');
+    background-image: url('../assets/images/Task_1/BG_Task_1.png');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
@@ -175,24 +192,22 @@ body, html {
     touch-action: none;
 }
 
+
 .shadow-overlay {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    /* שחור חצי שקוף שיוצר אפקט של צל אמיתי על הרקע */
     background-color: rgba(0, 0, 0, 0.45); 
-    pointer-events: none; /* קריטי כדי שלא יחסום לחיצות וגרירות על העציץ */
-    z-index: 1; /* יושב מעל תמונת הרקע אבל מתחת לעציץ ולכלים */
-    
-    /* חותך את השכבה בדיוק לפי משוואת האלכסון שלך */
+    pointer-events: none; 
+    z-index: 1; 
     clip-path: polygon(0% -40.67%, 100% 153.33%, 100% 100%, 0% 100%);
     }
 
 .draggable-item {
     position: absolute;
-    width: 18%;
+    width: 16%;
     height: auto; 
     top: 50%;
     left: 50%;
@@ -215,7 +230,7 @@ body, html {
     position: absolute;
     top: 20px;
     right: 20px; 
-    width: 80px;
+    width: 100px;
     cursor: pointer;
     z-index: 100;
     transition: transform 0.3s ease;
@@ -343,13 +358,14 @@ body, html {
 }
 
 .tool-item.dragging {
-    position: fixed; 
-    width: 150px; 
-    height: 150px;
-    transform: translate(-50%, -50%) scale(1.1); 
-    cursor: grabbing;
-    pointer-events: none; 
-    z-index: 9999;
+    position: fixed !important; 
+    width: 100px !important;   
+    height: 100px !important;
+    object-fit: contain !important;
+    transform: translate(-50%, -50%) scale(1.1) !important; 
+    cursor: grabbing !important;
+    pointer-events: none !important; 
+    z-index: 9999 !important;
 }
 
 .water-animation {
@@ -362,7 +378,7 @@ body, html {
     pointer-events: none;
     opacity: 0;
     transform: translateX(-50%);
-    z-index: 600;
+    z-index: 800;
     filter: blur(1px);
     box-shadow: 0 0 10px rgba(30, 144, 255, 0.5);
     animation: none;
@@ -405,17 +421,184 @@ body, html {
     transform: scale(1.05);
 }
 
-/* שכבת הדיבאג של אזור הצל */
-.shadow-zone-debug {
+.task2-wrapper {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    background-image: url('../assets/images/Task_2/BG_Task_2.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    overflow: hidden;
+    touch-action: none;
+}
+
+.pot-inactive {
+    pointer-events: none;
+}
+
+.pot-assembly-zone {
+    position: absolute;
+    width: 43%;              
+    height: 57vh;            
+    left: 50%;
+    bottom: 13%;            
+    transform: translateX(-50%);
+    pointer-events: none;    
+    z-index: 10;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;   
+}
+
+.task2-pot-element {
+    width: 100%;             
+    height: auto;
+    object-fit: contain;
+    z-index: 11;             
+}
+
+.placed-stick-child {
+    position: absolute;
+    top: 68%;                 
+    width: auto !important;  
+    height: 46vh;         
+    z-index: 9;             
+    object-fit: contain;
+    transform-origin: bottom center; 
+}
+
+.left-stick-child {
+    left: 30%;               
+    transform: translate(0, -100%) rotate(-1deg); 
+}
+
+.right-stick-child {
+    right: 30%;              
+    transform: translate(0, -100%) rotate(1deg);
+}
+
+.zigzag-rope {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(255, 0, 0, 0.3); /* אדום עם 30% שקיפות */
-    pointer-events: none; /* קריטי! שהשכבה לא תחסום לחיצות וגרירות */
-    z-index: 1; /* יושב מעל הרקע אבל מתחת לעציץ ולכלים */
-    
-    /* הטריק החכם: חותך את ה-div בצורה של משולש/אלכסון לפי הנוסחה שלך */
-    clip-path: polygon(0% 33.33%, 100% 133.33%, 100% 100%, 0% 100%);
+    pointer-events: none; 
+    z-index: 12; 
+    overflow: visible !important; 
+}
+
+
+.zigzag-rope .rope-guide {
+    fill: none;
+    stroke: #8B5A2B;
+    stroke-width: 3;
+    stroke-dasharray: 6,6;
+    stroke-linecap: round;
+    opacity: 0.4;
+}
+
+.zigzag-rope .rope-filled {
+    fill: none;
+    stroke: #5c3a1a;
+    stroke-width: 5;
+    stroke-dasharray: 6,6;
+    stroke-linecap: round;
+    filter: drop-shadow(0px 1px 2px rgba(0,0,0,0.5));
+}
+
+.rope-waypoint {
+    position: absolute;
+    width: 25px;
+    height: 25px;
+    background-color: transparent;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 15;
+}
+
+.rope-waypoint.active-target {
+    background-color: rgba(255, 251, 0, 0.2);
+    box-shadow: 0 0 10px rgba(255, 251, 0, 0.6);
+}
+
+.rope-waypoint.completed {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0);
+}
+
+
+.final-rope-image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    z-index: 12;         
+    pointer-events: none; 
+    animation: ropeAppear 0.4s ease-out; 
+}
+
+@keyframes ropeAppear {
+    from {
+        opacity: 0;
+        transform: scale(0.98);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.final-pot-image {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    object-fit: contain;
+    z-index: 12;          
+    pointer-events: none; 
+}
+
+.final-pot-image.stage-0 {
+    width: 100% !important;
+}
+
+.final-pot-image.stage-1,
+.final-pot-image.stage-2 {
+    width: 67% !important;
+}
+
+.hub-item.task1 { width: 12%; }
+.hub-item.task2 { width: 37%; }
+.hub-item.task3 { width: 12%; }
+
+.hub-item.task1.completed { width: 12%; } 
+.hub-item.task2.completed { 
+    width: 24%;
+    left:34% !important;
+}
+.hub-item.task3.completed { width: 20%; }
+
+.hub-item {
+    position: absolute;
+    cursor: pointer;
+    transition: transform 0.2s ease, width 0.3s ease; 
+    object-fit: contain;
+}
+
+.hub-item.completed {
+    cursor: default;
+    opacity: 0.8;
+}
+
+.confetti {
+    position: fixed;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    pointer-events: none; 
+    z-index: 9999;
 }

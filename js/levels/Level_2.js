@@ -12,28 +12,32 @@ export default class Level_2 {
     }
 
     init() {
-        this.container.innerHTML = `
+
+        const t1 = window.gameState.task1_completed ? 'FloweringPot.png' : 'DryPot.png';
+        const t2 = window.gameState.task2_completed ? 'PotWithThread_3.png' : 'BasePot.png';
+        const t3 = window.gameState.task3_completed ? 'FloweringPot.png' : 'DryPot.png';
+    
+        const c1 = window.gameState.task1_completed ? 'completed' : '';
+        const c2 = window.gameState.task2_completed ? 'completed' : '';
+        const c3 = window.gameState.task3_completed ? 'completed' : '';
+
+         this.container.innerHTML = `
         <div class="hub-wrapper">
             <img src="assets/images/porch.png" class="hub-bg" alt="Hub Room">
-
-            ${!window.gameState.task1_completed ? '<div id="hotspot-1" class="hotspot" title="משימה 1"></div>' : ''}
             
-            <div id="hotspot-2" class="hotspot" title="משימה 2"></div>
-            <div id="hotspot-3" class="hotspot" title="משימה 3"></div>
+            <img id="task1-item" src="assets/images/Task_1/items/${t1}" class="hub-item task1 ${c1}" style="bottom: 15%; left: 13%;">
+            <img id="task2-item" src="assets/images/Task_2/items/${t2}" class="hub-item task2 ${c2}" style="bottom: 14%; left: 30%;">
+            <img id="task3-item" src="assets/images/Task_1/items/${t3}" class="hub-item task3 ${c3}" style="bottom: 15%; right: 15%;">
         </div>
-    `;
+        `;
 
-        this.hotspot1 = document.getElementById('hotspot-1');
-        this.hotspot2 = document.getElementById('hotspot-2');
-        this.hotspot3 = document.getElementById('hotspot-3');
+        this.t1 = document.getElementById('task1-item');
+        this.t2 = document.getElementById('task2-item');
+        this.t3 = document.getElementById('task3-item');
 
-        //this.hotspot1.addEventListener('click', this.onTask1Click);
-        //this.hotspot2.addEventListener('click', this.onTask2Click);
-        //this.hotspot3.addEventListener('click', this.onTask3Click);
-
-        if (this.hotspot1) this.hotspot1.addEventListener('click', this.onTask1Click);
-        if (this.hotspot2) this.hotspot2.addEventListener('click', this.onTask2Click);
-        if (this.hotspot3) this.hotspot3.addEventListener('click', this.onTask3Click);
+        if (!window.gameState.task1_completed) this.t1.addEventListener('click', this.onTask1Click);
+        if (!window.gameState.task2_completed) this.t2.addEventListener('click', this.onTask2Click);
+        if (!window.gameState.task3_completed) this.t3.addEventListener('click', this.onTask3Click);
 
         setTimeout(() => {
             this.container.classList.remove('fade-out');
@@ -69,9 +73,10 @@ export default class Level_2 {
     }
 
     destroy() {
-        this.hotspot1.removeEventListener('click', this.onTask1Click);
-        this.hotspot2.removeEventListener('click', this.onTask2Click);
-        this.hotspot3.removeEventListener('click', this.onTask3Click);
+        if (this.t1) this.t1.removeEventListener('click', this.onTask1Click);
+        if (this.t2) this.t2.removeEventListener('click', this.onTask2Click);
+        if (this.t3) this.t3.removeEventListener('click', this.onTask3Click);
+        
         this.container.innerHTML = '';
     }
 }
