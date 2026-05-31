@@ -434,12 +434,11 @@ updateToolPosition(clientX, clientY) {
     }
 
     spawnConfetti() {
-        for (let i = 0; i < 60; i++) { // יותר חלקיקים
+        for (let i = 0; i < 60; i++) { 
             const p = document.createElement('div');
             p.className = 'confetti';
-            // מיקום התחלתי: מרכז המסך או אקראי על כל המסך
             p.style.left = `${Math.random() * window.innerWidth}px`;
-            p.style.top = `-20px`; // מתחיל למעלה
+            p.style.top = `-20px`; 
             p.style.backgroundColor = `hsl(${Math.random() * 360}, 70%, 60%)`;
             document.body.appendChild(p);
         
