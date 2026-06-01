@@ -321,25 +321,23 @@ export default class Task_3 {
             }
 
             if (target.classList.contains('bug-element')) {
-                target.style.transition = 'transform 0.4s, opacity 0.4s';
-                target.style.transform = 'scale(0) rotate(180deg)';
-                target.style.opacity = '0';
+                target.classList.add('falling-bug');
                 target.style.pointerEvents = 'none';
-                
+
                 setTimeout(() => {
                     target.remove();
-                    
+
                     const remainingBugs = document.querySelectorAll('.bug-element').length;
-                    
+
                     if (remainingBugs === 0) {
                         this.spawnConfetti();
                         this.resetActiveTool();
 
                         if (!window.gameState) window.gameState = {};
-                        window.gameState.task3_completed = true; 
-                        window.gameState.task3_just_completed = true; 
+                        window.gameState.task3_completed = true;
+                        window.gameState.task3_just_completed = true;
                     }
-                }, 400);
+                }, 1000);
             }
             return;
         }
