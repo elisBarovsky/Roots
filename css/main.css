@@ -277,8 +277,8 @@ body, html {
     max-height: 70vh; 
     margin: 0 auto; 
 
-    box-shadow: 0 10px 40px rgba(0,0,0,0.6);
-    border-radius: 5px;
+  //  box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+  //  border-radius: 5px;
 }
 
 .hint-overlay.active .hint-modal {
@@ -288,7 +288,7 @@ body, html {
 .close-hint {
     position: absolute;
     top: -45px;
-    left: 17.5%; 
+    left: 0.5%; 
 
     color: white;
     font-size: 45px;
@@ -309,12 +309,12 @@ body, html {
     right: 20px;
     display: flex;
     align-items: center;
-    flex-direction: row-reverse;
+    /* מחקנו את flex-direction: row-reverse */
     z-index: 500;
 }
 
 .toolbox-icon {
-    width: 110px;
+   // width: 135px;
     height: 110px;
     cursor: pointer;
     transition: transform 0.2s ease;
@@ -326,35 +326,86 @@ body, html {
 }
 
 .toolbox-panel {
+    position: absolute;
+    right: 140px;
     display: flex;
-    gap: 15px;
-    background: rgba(0, 0, 0, 0.85);
-    border: 2px solid #555;
-    border-radius: 10px 0 0 10px;
-    padding: 0;
+    align-items: center;
+    gap: 10px; 
+    
+    background-color: #a04a41;
+    border: 9px solid #ab706a;
+    border-radius: 20px;
+        padding: 8px; 
+    
     width: auto;
     max-width: 0;
     overflow: hidden;
     opacity: 0;
-    transition: max-width 0.4s cubic-bezier(0.25, 1, 0.5, 1), padding 0.4s ease, opacity 0.3s ease;
+    transition: max-width 0.4s ease, opacity 0.3s ease;
+    z-index: 501;
 }
 
 .toolbox-container.expanded .toolbox-panel {
-    max-width: 600px; 
-    padding: 10px 20px;
+    max-width: 1000px; /* גדול מספיק להכיל את כל הקוביות */
     opacity: 1;
 }
 
 .tool-item {
-    width: 100px;
-    height: 100px;
+    width: 90px;
+    height: 90px;
     cursor: grab;
     object-fit: contain;
     transition: transform 0.2s ease;
 }
 
+.toolbox-panel > .tool-item,
+.tool-slot {
+    width: 100px;  /* רוחב אחיד לכל הקוביות */
+    height: 100px; /* גובה אחיד לכל הקוביות */
+    
+    /* צבע הרקע של הקוביה עצמה */
+    background-color: #883a31; 
+    border-radius: 8px;
+    
+    /* מקטין את התמונה פנימה כדי שלא תיגע בקצוות הקוביה */
+    padding: 10px; 
+    box-sizing: border-box;
+    
+    /* אפקט קטן שנותן לקוביה תחושה של שקע (כמו בתמונה) */
+    box-shadow: inset 0px 4px 6px rgba(0, 0, 0, 0.25);
+    
+    cursor: pointer;
+    transition: transform 0.2s ease, background-color 0.2s ease;
+    object-fit: contain;
+}
+
+.tool-slot {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.toolbox-panel > .tool-item:hover,
+.tool-slot:hover {
+    transform: scale(1.05);
+    background-color: #9c453b; /* מבהיר קצת את הקוביה בהובר */
+}
 .tool-item:hover {
     transform: scale(1.15);
+}
+
+.tool-slot .tool-item {
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    background-color: transparent;
+    box-shadow: none;
+    border-radius: 0;
+}
+
+.stacked-tool {
+    position: absolute;
 }
 
 .tool-item.dragging {
@@ -366,6 +417,11 @@ body, html {
     cursor: grabbing !important;
     pointer-events: none !important; 
     z-index: 9999 !important;
+}
+
+img[src*="spray"].tool-item.dragging,
+img[src*="Spray"].tool-item.dragging {
+    transform: translate(-50%, -10%) scale(1.1) !important; 
 }
 
 .water-animation {
@@ -460,22 +516,22 @@ body, html {
 
 .placed-stick-child {
     position: absolute;
-    top: 68%;                 
+    top: 57%;                 
     width: auto !important;  
     height: 46vh;         
-    z-index: 9;             
+    z-index: 13;             
     object-fit: contain;
     transform-origin: bottom center; 
 }
 
 .left-stick-child {
-    left: 30%;               
-    transform: translate(0, -100%) rotate(-1deg); 
+    left: 34%;               
+    transform: translate(0, -100%) rotate(-4deg); 
 }
 
 .right-stick-child {
     right: 30%;              
-    transform: translate(0, -100%) rotate(1deg);
+    transform: translate(0, -100%) rotate(6deg);
 }
 
 .zigzag-rope {
@@ -485,7 +541,7 @@ body, html {
     width: 100%;
     height: 100%;
     pointer-events: none; 
-    z-index: 12; 
+   // z-index: 12; 
     overflow: visible !important; 
 }
 
@@ -553,15 +609,13 @@ body, html {
 }
 
 .final-pot-image {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+    width: 100%;             
+    height: auto;
     object-fit: contain;
-    z-index: 12;          
-    pointer-events: none; 
+    z-index: 11;             
 }
 
+/*
 .final-pot-image.stage-0 {
     width: 100% !important;
 }
@@ -570,15 +624,15 @@ body, html {
 .final-pot-image.stage-2 {
     width: 67% !important;
 }
-
+*/
 .hub-item.task1 { width: 12%; }
 .hub-item.task2 { width: 37%; }
 .hub-item.task3 { width: 19%; }
 
 .hub-item.task1.completed { width: 12%; } 
 .hub-item.task2.completed { 
-    width: 24%;
-    left:34% !important;
+    width: 34%;
+    left: 29% !important;
 }
 .hub-item.task3.completed { width: 20%; }
 
@@ -591,7 +645,7 @@ body, html {
 
 .hub-item.completed {
     cursor: default;
-    opacity: 0.8;
+    opacity: 1;
 }
 
 .confetti {
@@ -620,7 +674,7 @@ body, html {
     width: 25%;              
     height: 55vh;          
     left: 50%;
-    bottom: 3%;            
+    bottom: 10%;            
     transform: translateX(-50%);
     pointer-events: none;    
     z-index: 10;
@@ -638,12 +692,12 @@ body, html {
 
 #bugs-container {
     position: absolute;
-    top: -35px;
-    left: 0;
-    width: 100%;
-    height: 60%;
+    top: 12px;
+    left: 30px;
+    width: 73%;
+    height: 58%;
     z-index: 12;
-    pointer-events: none; 
+    pointer-events: none;
 }
 
 .bug-element {
@@ -667,10 +721,10 @@ body, html {
 
 #leaves-container {
     position: absolute;
-    top: -35px;
+    top: 14px;
     left: 0;
     width: 100%;
-    height: 60%;
+    height: 53%;
     z-index: 12;
     pointer-events: none; 
 }
@@ -748,3 +802,69 @@ body, html {
 .falling-bug {
     animation: bug-fall-anim 1s ease-in forwards !important;
 }
+
+.tool-slot {
+    position: relative;
+    width: 100px;
+    height: 100px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.stacked-tool {
+    position: absolute;
+}
+
+.tool-count {
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+    background: #e50914;
+    color: white;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    z-index: 10;
+    pointer-events: none; 
+}
+
+
+
+.drop-particle {
+    width: 15px; 
+    height: auto;
+    pointer-events: none;
+    z-index: 9999;
+    animation: drop-fall 0.5s ease-in forwards;
+}
+@keyframes drop-fall {
+    0% { transform: translate(-50%, -50%) scale(0.5); opacity: 1; }
+    100% { transform: translate(calc(-50% + var(--offsetX)), 150px) scale(1.2); opacity: 0; }
+}
+/*
+@keyframes drop-fall {
+    0% { transform: translate(var(--startX), var(--startY)) scale(0.5); opacity: 1; }
+    100% { transform: translate(var(--endX), calc(var(--startY) + 150px)) scale(1.2); opacity: 0; }
+}
+*/
+.mist-particle {
+    width: 40px; 
+    height: auto;
+    pointer-events: none;
+    z-index: 9999;
+    animation: mist-puff 0.5s ease-out forwards;
+}
+@keyframes mist-puff {
+    0% { transform: translate(-50%, -50%) scale(0.3); opacity: 0.9; }
+    100% { transform: translate(calc(-50% + var(--dirX)), calc(-50% + var(--dirY))) scale(2.5); opacity: 0; }
+}
+/*
+@keyframes mist-puff {
+    0% { transform: translate(var(--startX), var(--startY)) scale(0.3); opacity: 0.9; }
+    100% { transform: translate(calc(var(--startX) + var(--dirX)), calc(var(--startY) + var(--dirY))) scale(2.5); opacity: 0; }
+}*/
