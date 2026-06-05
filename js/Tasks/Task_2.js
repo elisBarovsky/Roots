@@ -1,16 +1,13 @@
 import Level_2 from '../levels/Level_2.js'; 
+import Toolbox from '../Tools/Toolbox.js'; 
 
 export default class Task_2 {
     constructor(container) {
         this.container = container;
 
-        this.activeDraggedTool = null;
-        this.toolPlaceholder = null;
-
         this.growthStage = 0;
         this.wateringTimeout = null;
-        this.toolRotation = 0;
-
+        this.dropInterval = null;
         this.stick1Placed = false;
         this.stick2Placed = false;
         this.ropePlaced = false;
@@ -53,24 +50,10 @@ export default class Task_2 {
                     </div>
                 </div>
 
-                <div class="toolbox-container" id="toolbox-container">
-                    <img src="assets/images/toolbox_close.jpg" class="toolbox-icon" id="toolbox-toggle">
-                    <div class="toolbox-panel" id="toolbox-panel">
-                        <img src="assets/images/Task_2/Tools/flashlight.png" class="tool-item" data-tool="flashlight" title="פנס">
-                        <img src="assets/images/Tools/watering_can.jpg" class="tool-item" data-tool="watering_can" title="משפך">
-                        <img src="assets/images/Task_2/Tools/Thread.png" class="tool-item" data-tool="Thread" title="סליל">
-                        <img src="assets/images/Task_2/Tools/Stick_1.png" class="tool-item" data-tool="Stick_1" title="מקל 1">
-                        <img src="assets/images/Task_2/Tools/Stick_2.png" class="tool-item" data-tool="Stick_2" title="מקל 2">
-                    </div>
-                </div>
-
                 <div id="pot-assembly-container" class="pot-assembly-zone">
                     <svg id="zigzag-rope-svg" class="zigzag-rope"></svg>
-                    
                     <img id="magic-item" class="task2-pot-element" src="${this.potImages[0]}" alt="Magic Item">
                 </div>
-
-                <div id="water-effect" class="water-animation"></div>
             </div>
         `;
 
@@ -79,24 +62,14 @@ export default class Task_2 {
         this.item = document.getElementById('magic-item');
         this.hintBtn = document.getElementById('hint-btn');
         this.hintOverlay = document.getElementById('hint-overlay');
-        this.toolboxContainer = document.getElementById('toolbox-container');
-        this.toolboxToggle = document.getElementById('toolbox-toggle');
-        this.waterEffect = document.getElementById('water-effect');
         this.backHubBtn = document.getElementById('back-hub-btn'); 
+
+        this.toolbox = new Toolbox(this.wrapper);
+        this.toolbox.init();
 
         this.hintBtn.addEventListener('click', this.toggleHint);
         this.hintOverlay.addEventListener('click', this.toggleHint);
         this.backHubBtn.addEventListener('click', this.onBackClick);
-
-        this.toolboxToggle.addEventListener('click', (e) => {
-            e.stopPropagation();
-            this.toolboxContainer.classList.toggle('expanded');
-        });
-
-        const tools = this.container.querySelectorAll('.tool-item');
-        tools.forEach(tool => {
-            tool.addEventListener('click', (e) => this.selectTool(e, tool));
-        });
 
         this.wrapper.addEventListener('click', this.onSceneClick);
         window.addEventListener('pointerdown', this.onPointerDown); 
@@ -106,34 +79,6 @@ export default class Task_2 {
         setTimeout(() => {
             this.container.classList.remove('fade-out');
         }, 50);
-    }
-
-    selectTool(e, tool) {
-        e.preventDefault();
-        e.stopPropagation();
-
-        if (this.activeDraggedTool) {
-            this.resetActiveTool();
-        }
-
-        this.activeDraggedTool = tool;
-
-        this.toolPlaceholder = document.createElement('div');
-        this.toolPlaceholder.style.width = '50px';
-        this.toolPlaceholder.style.height = '50px';
-        this.toolPlaceholder.style.display = 'inline-block';
-        tool.parentNode.insertBefore(this.toolPlaceholder, tool);
-
-        this.activeDraggedTool.style.position = 'fixed';
-        this.activeDraggedTool.style.zIndex = '9999';
-        this.activeDraggedTool.style.pointerEvents = 'none';
-        
-        this.toolRotation = 0;
-        this.activeDraggedTool.classList.add('dragging');
-        this.activeDraggedTool.style.setProperty('transform', 'translate(-50%, -50%) scale(1.5)', 'important');
-
-        document.body.appendChild(this.activeDraggedTool);
-        this.updateToolPosition(e.clientX, e.clientY);
     }
 
     onPointerDown(e) {
@@ -154,11 +99,9 @@ export default class Task_2 {
     }
 
     onPointerMove(e) {
-        if (this.activeDraggedTool) {
-            this.updateToolPosition(e.clientX, e.clientY);
-
-            const toolType = this.activeDraggedTool.getAttribute('data-tool');
-
+        const toolType = this.toolbox.getActiveToolType();
+        
+        if (toolType) {
             if (toolType === 'Thread' && this.basePoints && !this.ropePlaced) {
                 const containerRect = this.potContainer.getBoundingClientRect();
                 const mouseP = {
@@ -200,12 +143,6 @@ export default class Task_2 {
                     }
                 }
             }
-
-            if (this.waterEffect.classList.contains('active')) {
-                const wrapperRect = this.wrapper.getBoundingClientRect();
-                this.waterEffect.style.left = `${e.clientX - wrapperRect.left - 20}px`;
-                this.waterEffect.style.top = `${e.clientY - wrapperRect.top + 30}px`;
-            }
         }
     }
 
@@ -239,45 +176,30 @@ export default class Task_2 {
 
     onBackClick(e) {
         e.stopPropagation();
-
         this.container.classList.add('fade-out');
 
         setTimeout(() => {
             this.destroy();
             const level2 = new Level_2(this.container);
             level2.init();
-
             this.container.classList.remove('fade-out');
         }, 1500);
-    }
-
-updateToolPosition(clientX, clientY) {
-        if (!this.activeDraggedTool) return;
-        this.activeDraggedTool.style.left = `${clientX}px`;
-        this.activeDraggedTool.style.top = `${clientY}px`;
-        this.activeDraggedTool.style.setProperty('transform', `translate(-50%, -50%) scale(1.5) rotate(${this.toolRotation}deg)`, 'important');
     }
 
     onPointerUp(e) {
         this.isPointerDown = false; 
 
-        if (!this.activeDraggedTool) return;
-
-        const toolType = this.activeDraggedTool.getAttribute('data-tool');
+        const toolType = this.toolbox.getActiveToolType();
+        if (!toolType) return;
 
         if (toolType === 'Thread' && this.isTracingRope && !this.ropePlaced) {
-          //  console.log("עזבת את העכבר מוקדם מדי! החוט נקרע.");
             this.resetRopeProgress();
             return;
         }
 
         if (toolType === 'Stick_1' || toolType === 'Stick_2') {
             const potRect = this.item.getBoundingClientRect();
-            
-            const isNearPot = e.clientX >= potRect.left &&
-                              e.clientX <= potRect.right &&
-                              e.clientY >= potRect.top - 100 &&
-                              e.clientY <= potRect.bottom + 100;
+            const isNearPot = e.clientX >= potRect.left && e.clientX <= potRect.right && e.clientY >= potRect.top - 100 && e.clientY <= potRect.bottom + 100;
 
             if (isNearPot) {
                 const potCenterX = potRect.left + potRect.width / 2;
@@ -296,9 +218,8 @@ updateToolPosition(clientX, clientY) {
 
     placeStickPermanent(type, side) {
         const placedStick = document.createElement('img');
-        placedStick.src = `assets/images/Task_2/Tools/${type}.png`;
+        placedStick.src = `assets/images/Tools/${type}.png`;
         placedStick.className = `placed-stick-child ${side}-stick-child`;
-        
         this.potContainer.appendChild(placedStick);
 
         if (side === 'left') {
@@ -307,17 +228,19 @@ updateToolPosition(clientX, clientY) {
             this.stick2Placed = true;
         }
 
-        if (this.toolPlaceholder) {
-            this.toolPlaceholder.remove();
-            this.toolPlaceholder = null;
+        const toolEl = this.toolbox.getActiveTool();
+        if (toolEl) toolEl.remove();
+        
+        this.toolbox.activeDraggedTool = null;
+        if (this.toolbox.toolPlaceholder) {
+            this.toolbox.toolPlaceholder.remove();
+            this.toolbox.toolPlaceholder = null;
         }
-        this.activeDraggedTool.remove();
-        this.activeDraggedTool = null;
+        this.toolbox.updateSticksCount(); 
         
         if (this.stick1Placed && this.stick2Placed) {
             this.drawZigzagRope();
         }
-        
         this.checkTaskCompletion();
     }
 
@@ -388,32 +311,26 @@ updateToolPosition(clientX, clientY) {
         `;
         
         this.item = document.getElementById('magic-item');
-
-        if (this.toolPlaceholder) {
-            this.toolPlaceholder.remove();
-            this.toolPlaceholder = null;
-        }
-        this.activeDraggedTool.remove();
-        this.activeDraggedTool = null;
-
+        this.toolbox.resetActiveTool();
         this.checkTaskCompletion();
     }
 
     checkTaskCompletion() {
         if (this.stick1Placed && this.stick2Placed && this.ropePlaced && this.growthStage === 2) {
+
+            if (this.toolbox && typeof this.toolbox.closeDrawer === 'function') {
+               this.toolbox.closeDrawer();
+            }
+
             if (!window.gameState) window.gameState = {};
             window.gameState.task2_completed = true;
+            window.gameState.task2_just_completed = true;
         }
     }
 
     onSceneClick(e) {
-        if (!this.activeDraggedTool) return;
-
-        const toolType = this.activeDraggedTool.getAttribute('data-tool');
-
-        if (toolType === 'Thread' || toolType === 'Stick_1' || toolType === 'Stick_2') {
-            return; 
-        }
+        const toolType = this.toolbox.getActiveToolType();
+        if (!toolType) return;
 
         if (toolType === 'watering_can') {
             const potRect = this.item.getBoundingClientRect();
@@ -430,7 +347,7 @@ updateToolPosition(clientX, clientY) {
             }
         }
 
-        this.resetActiveTool();
+        this.toolbox.resetActiveTool();
     }
 
     spawnConfetti() {
@@ -456,13 +373,19 @@ updateToolPosition(clientX, clientY) {
     triggerWateringPour(clientX, clientY) {
         if (this.wateringTimeout) clearTimeout(this.wateringTimeout);
 
-        this.toolRotation = -45;
-        this.activeDraggedTool.style.setProperty('transform', `translate(-50%, -50%) scale(1.5) rotate(${this.toolRotation}deg)`, 'important');
+        const activeTool = this.toolbox.getActiveTool();
+        if (activeTool) {
+            activeTool.style.setProperty('transform', `translate(-50%, -50%) scale(1.5) rotate(45deg)`, 'important');
+        }
 
-        const rect = this.wrapper.getBoundingClientRect();
-        this.waterEffect.style.left = `${clientX - rect.left - 20}px`;
-        this.waterEffect.style.top = `${clientY - rect.top + 30}px`;
-        this.waterEffect.classList.add('active');
+        const spoutX = clientX + 80; 
+        const spoutY = clientY + 10;
+
+        if (!this.dropInterval) {
+            this.dropInterval = setInterval(() => {
+                this.toolbox.spawnParticle('water', spoutX, spoutY);
+            }, 50);
+        }
 
         if (this.wateringProgress === undefined) {
             this.wateringProgress = 0;
@@ -484,60 +407,46 @@ updateToolPosition(clientX, clientY) {
                 }
                 
                 if (this.growthStage === 2) {
+                    this.spawnConfetti();
+                    this.toolbox.resetActiveTool();
 
-                    this.spawnConfetti(this.item);
-    
-                    if (!window.gameState) window.gameState = {};
-                    window.gameState.task2_completed = true;
-                    this.resetActiveTool();
-                   // console.log("משימה 2 הושלמה!");
+                    // --- תוספת: עצירת המים וסגירת המגירה והתיבה ---
+                    this.stopWateringEffect();
+                    if (this.wateringTimeout) {
+                        clearTimeout(this.wateringTimeout);
+                        this.wateringTimeout = null;
+                    }
+
+                    const toolboxContainer = document.querySelector('.toolbox-container');
+                    if (toolboxContainer) {
+                        toolboxContainer.classList.remove('expanded');
+                        const toolboxIcon = toolboxContainer.querySelector('.toolbox-icon');
+                        if (toolboxIcon) {
+                            toolboxIcon.src = 'assets/images/Tools/toolbox_close.png'; 
+                        }
+                    }
                 }
                 
                 this.checkTaskCompletion();
             }
         }
 
-        this.wateringTimeout = setTimeout(() => {
-            this.stopWateringEffect();
-        }, 800);
+        if (this.growthStage < 2) {
+            this.wateringTimeout = setTimeout(() => {
+                this.stopWateringEffect();
+            }, 800);
+        }
     }
 
     stopWateringEffect() {
-        this.toolRotation = 0;
-        if (this.activeDraggedTool) {
-            this.activeDraggedTool.style.setProperty('transform', `translate(-50%, -50%) scale(1.2) rotate(${this.toolRotation}deg)`, 'important');
+        const activeTool = this.toolbox.getActiveTool();
+        if (activeTool) {
+            activeTool.style.setProperty('transform', `translate(-50%, -50%) scale(1.5) rotate(0deg)`, 'important');
         }
-        this.waterEffect.classList.remove('active');
-    }
-
-    resetActiveTool() {
-        if (!this.activeDraggedTool) return;
-
-        if (this.activeDraggedTool.getAttribute('data-tool') === 'Thread' && !this.ropePlaced) {
-            this.resetRopeProgress();
+        if (this.dropInterval) {
+            clearInterval(this.dropInterval);
+            this.dropInterval = null;
         }
-
-        this.stopWateringEffect();
-        if (this.wateringTimeout) clearTimeout(this.wateringTimeout);
-
-        this.activeDraggedTool.style.position = '';
-        this.activeDraggedTool.style.zIndex = '';
-        this.activeDraggedTool.style.pointerEvents = '';
-        this.activeDraggedTool.style.transform = '';
-        this.activeDraggedTool.style.transition = '';
-        this.activeDraggedTool.style.left = '';
-        this.activeDraggedTool.style.top = '';
-        this.activeDraggedTool.style.width = '';  
-        this.activeDraggedTool.style.height = '';
-        this.activeDraggedTool.classList.remove('dragging');
-
-        if (this.toolPlaceholder && this.toolPlaceholder.parentNode) {
-            this.toolPlaceholder.parentNode.insertBefore(this.activeDraggedTool, this.toolPlaceholder);
-            this.toolPlaceholder.remove();
-            this.toolPlaceholder = null;
-        }
-
-        this.activeDraggedTool = null;
     }
 
     toggleHint() {
@@ -546,18 +455,13 @@ updateToolPosition(clientX, clientY) {
 
     destroy() {
         if (this.wateringTimeout) clearTimeout(this.wateringTimeout);
+        if (this.dropInterval) clearInterval(this.dropInterval);
         window.removeEventListener('pointerdown', this.onPointerDown);
         window.removeEventListener('pointermove', this.onPointerMove);
         window.removeEventListener('pointerup', this.onPointerUp);
-        if (this.wrapper) {
-            this.wrapper.removeEventListener('click', this.onSceneClick);
-        }
-        if (this.backHubBtn) {
-            this.backHubBtn.removeEventListener('click', this.onBackClick); 
-        }
-        if (this.activeDraggedTool) {
-            this.activeDraggedTool.remove();
-        }
+        if (this.wrapper) this.wrapper.removeEventListener('click', this.onSceneClick);
+        if (this.backHubBtn) this.backHubBtn.removeEventListener('click', this.onBackClick); 
+        if (this.toolbox) this.toolbox.destroy();
         this.container.innerHTML = '';
     }
 }

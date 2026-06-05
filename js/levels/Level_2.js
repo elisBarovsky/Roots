@@ -14,7 +14,7 @@ export default class Level_2 {
     init() {
         const t1 = window.gameState.task1_completed ? 'FloweringPot.png' : 'DryPot.png';
         const t2 = window.gameState.task2_completed ? 'PotWithThread_3.png' : 'BasePot.png';
-        const t3 = window.gameState.task3_completed ? 'Second_Pot.png' : 'First_Pot.png';
+        const t3 = window.gameState.task3_completed ? 'Third_Pot.png' : 'First_Pot.png';
     
         const c1 = window.gameState.task1_completed ? 'completed' : '';
         const c2 = window.gameState.task2_completed ? 'completed' : '';
@@ -25,8 +25,8 @@ export default class Level_2 {
             <img src="assets/images/porch.png" class="hub-bg" alt="Hub Room">
             
             <img id="task1-item" src="assets/images/Task_1/items/${t1}" class="hub-item task1 ${c1}" style="bottom: 15%; left: 13%;">
-            <img id="task2-item" src="assets/images/Task_2/items/${t2}" class="hub-item task2 ${c2}" style="bottom: 14%; left: 30%;">
-            <img id="task3-item" src="assets/images/Task_3/items/${t3}" class="hub-item task3 ${c3}" style="bottom: 3%; right: 12%;">
+            <img id="task2-item" src="assets/images/Task_2/items/${t2}" class="hub-item task2 ${c2}" style="bottom: 14%; left: 28%;">
+            <img id="task3-item" src="assets/images/Task_3/items/${t3}" class="hub-item task3 ${c3}" style="bottom: 10%; right: 13%;">
         </div>
         `;
 
