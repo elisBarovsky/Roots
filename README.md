@@ -22,7 +22,7 @@ Roots is a gardening and puzzle-solving game. Players are challenged to nurture 
 * No special installation is required – the game runs directly in your browser.
 
 ### Instructions
-1. Download all files from this repository, or visit the link here: [Insert GitHub Pages Link].
+1. Download all files from this repository, or visit the link here: https://elisbaro.itch.io/roots.
 2. Open the `index.html` file in your browser.
 3. Enjoy the game!
 
@@ -33,4 +33,5 @@ Roots is a gardening and puzzle-solving game. Players are challenged to nurture 
 * **CSS3**
 * **HTML5**
 * **Howler.js** (for audio management)
-All game graphics, character sprites, and UI elements were custom-drawn by Hader Har-Tzvi, specifically for this project.
+
+* All game graphics, character sprites, and UI elements were custom-drawn by Hader Har-Tzvi, specifically for this project.
