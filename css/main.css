@@ -14,7 +14,7 @@ body, html {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    background-image: url('../images/menu-bg.jpg'); /* לעדכן תמונת רקע למסך הראשי */
+    background-image: url('../images/menu-bg.jpg');
     background-size: cover;
     background-position: center;
 }
@@ -81,7 +81,7 @@ body, html {
     position: absolute;
     cursor: pointer;
     z-index: 10;
-    transition: transform 0.2s ease;
+    transition: transform 0.2s ease, width 0.3s ease;
     object-fit: contain;
 }
 
@@ -91,9 +91,16 @@ body, html {
 
 .hub-item.completed {
     cursor: default;
-    opacity: 0.8; /* אפשר להוסיף שקיפות עדינה למראה "סגור" */
+    opacity: 1;
 }
 
+.hub-item.task1 { width: 12%; }
+.hub-item.task2 { width: 37%; }
+.hub-item.task3 { width: 19%; }
+
+.hub-item.task1.completed { width: 12%; } 
+.hub-item.task2.completed { width: 34%; left: 29% !important; }
+.hub-item.task3.completed { width: 20%; }
 
 .level-wrapper {
     position: relative;
@@ -131,9 +138,7 @@ body, html {
 .hub-wrapper {
     position: relative;
     width: 100vw;
-/* max-width: calc(100vh * (16 / 9));*/
     height: 100vh;
-/* max-height: calc(100vw * (9 / 16));*/
     margin: auto;
     background-color: #222;
     overflow: hidden;
@@ -142,7 +147,6 @@ body, html {
 .hub-bg {
     width: 100%;
     height: 100%;
-    /* object-fit: fill;*/
     object-fit: cover;
     pointer-events: none;
 }
@@ -150,7 +154,7 @@ body, html {
 .hotspot {
     position: absolute;
     cursor: pointer;
-     border: 2px solid red; /*זמני כדי לראות איפה הנקודות*/
+    border: 2px solid red;
     z-index: 10;
 }
 
@@ -159,26 +163,9 @@ body, html {
     border-radius: 10px;
 }
 
-#hotspot-1 {
-    bottom: 20%;
-    left: 15%;
-    width: 250px;
-    height: 250px;
-}
-
-#hotspot-2 {
-    bottom: 20%;
-    left: 45%;
-    width: 250px;
-    height: 250px;
-}
-
-#hotspot-3 {
-    bottom: 20%;
-    right: 15%;
-    width: 250px;
-    height: 250px;
-}
+#hotspot-1 { bottom: 20%; left: 15%; width: 250px; height: 250px; }
+#hotspot-2 { bottom: 20%; left: 45%; width: 250px; height: 250px; }
+#hotspot-3 { bottom: 20%; right: 15%; width: 250px; height: 250px; }
 
 .task1-wrapper {
     position: relative;
@@ -192,7 +179,6 @@ body, html {
     touch-action: none;
 }
 
-
 .shadow-overlay {
     position: absolute;
     top: 0;
@@ -203,7 +189,7 @@ body, html {
     pointer-events: none; 
     z-index: 1; 
     clip-path: polygon(0% -40.67%, 100% 153.33%, 100% 100%, 0% 100%);
-    }
+}
 
 .draggable-item {
     position: absolute;
@@ -212,7 +198,6 @@ body, html {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%); 
-
     cursor: grab;
     user-select: none;
     z-index: 10;
@@ -254,7 +239,6 @@ body, html {
     cursor: pointer;
     opacity: 0; 
     pointer-events: none; 
-
     perspective: 1200px;
     transition: opacity 0.4s ease-in-out;
 }
@@ -276,9 +260,6 @@ body, html {
     height: auto;
     max-height: 70vh; 
     margin: 0 auto; 
-
-  //  box-shadow: 0 10px 40px rgba(0,0,0,0.6);
-  //  border-radius: 5px;
 }
 
 .hint-overlay.active .hint-modal {
@@ -289,7 +270,6 @@ body, html {
     position: absolute;
     top: -45px;
     left: 0.5%; 
-
     color: white;
     font-size: 45px;
     font-weight: bold;
@@ -309,12 +289,10 @@ body, html {
     right: 20px;
     display: flex;
     align-items: center;
-    /* מחקנו את flex-direction: row-reverse */
     z-index: 500;
 }
 
 .toolbox-icon {
-   // width: 135px;
     height: 110px;
     cursor: pointer;
     transition: transform 0.2s ease;
@@ -331,12 +309,10 @@ body, html {
     display: flex;
     align-items: center;
     gap: 10px; 
-    
     background-color: #a04a41;
     border: 9px solid #ab706a;
     border-radius: 20px;
-        padding: 8px; 
-    
+    padding: 8px; 
     width: auto;
     max-width: 0;
     overflow: hidden;
@@ -346,7 +322,7 @@ body, html {
 }
 
 .toolbox-container.expanded .toolbox-panel {
-    max-width: 1000px; /* גדול מספיק להכיל את כל הקוביות */
+    max-width: 1000px;
     opacity: 1;
 }
 
@@ -358,54 +334,8 @@ body, html {
     transition: transform 0.2s ease;
 }
 
-.toolbox-panel > .tool-item,
-.tool-slot {
-    width: 100px;  /* רוחב אחיד לכל הקוביות */
-    height: 100px; /* גובה אחיד לכל הקוביות */
-    
-    /* צבע הרקע של הקוביה עצמה */
-    background-color: #883a31; 
-    border-radius: 8px;
-    
-    /* מקטין את התמונה פנימה כדי שלא תיגע בקצוות הקוביה */
-    padding: 10px; 
-    box-sizing: border-box;
-    
-    /* אפקט קטן שנותן לקוביה תחושה של שקע (כמו בתמונה) */
-    box-shadow: inset 0px 4px 6px rgba(0, 0, 0, 0.25);
-    
-    cursor: pointer;
-    transition: transform 0.2s ease, background-color 0.2s ease;
-    object-fit: contain;
-}
-
-.tool-slot {
-    position: relative;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.toolbox-panel > .tool-item:hover,
-.tool-slot:hover {
-    transform: scale(1.05);
-    background-color: #9c453b; /* מבהיר קצת את הקוביה בהובר */
-}
 .tool-item:hover {
     transform: scale(1.15);
-}
-
-.tool-slot .tool-item {
-    width: 100%;
-    height: 100%;
-    padding: 0;
-    background-color: transparent;
-    box-shadow: none;
-    border-radius: 0;
-}
-
-.stacked-tool {
-    position: absolute;
 }
 
 .tool-item.dragging {
@@ -422,6 +352,57 @@ body, html {
 img[src*="spray"].tool-item.dragging,
 img[src*="Spray"].tool-item.dragging {
     transform: translate(-50%, -10%) scale(1.1) !important; 
+}
+
+.tool-slot {
+    position: relative;
+    width: 100px;
+    height: 100px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #883a31;
+    border-radius: 8px;
+    padding: 10px;
+    box-sizing: border-box;
+    box-shadow: inset 0px 4px 6px rgba(0, 0, 0, 0.25);
+    cursor: pointer;
+    transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+.tool-slot:hover {
+    transform: scale(1.05);
+    background-color: #9c453b;
+}
+
+.tool-slot .tool-item {
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    background-color: transparent;
+    box-shadow: none;
+    border-radius: 0;
+}
+
+.stacked-tool {
+    position: absolute;
+}
+
+.tool-count {
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+    background: #e50914;
+    color: white;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    z-index: 10;
+    pointer-events: none; 
 }
 
 .water-animation {
@@ -446,13 +427,8 @@ img[src*="Spray"].tool-item.dragging {
 }
 
 @keyframes flowWater {
-    0% {
-        background-position: 0% 0%;
-    }
-
-    100% {
-        background-position: 0% 200%;
-    }
+    0% { background-position: 0% 0%; }
+    100% { background-position: 0% 200%; }
 }
 
 .back-to-hub-btn {
@@ -489,50 +465,41 @@ img[src*="Spray"].tool-item.dragging {
     touch-action: none;
 }
 
-.pot-inactive {
-    pointer-events: none;
-}
+.pot-inactive { pointer-events: none; }
 
 .pot-assembly-zone {
     position: absolute;
-    width: 43%;              
-    height: 57vh;            
+    width: 43%; 
+    height: 57vh; 
     left: 50%;
-    bottom: 13%;            
+    bottom: 13%; 
     transform: translateX(-50%);
-    pointer-events: none;    
+    pointer-events: none; 
     z-index: 10;
     display: flex;
     justify-content: center;
-    align-items: flex-end;   
+    align-items: flex-end; 
 }
 
 .task2-pot-element {
-    width: 100%;             
+    width: 100%; 
     height: auto;
     object-fit: contain;
-    z-index: 11;             
+    z-index: 11; 
 }
 
 .placed-stick-child {
     position: absolute;
-    top: 57%;                 
-    width: auto !important;  
-    height: 46vh;         
-    z-index: 13;             
+    top: 57%; 
+    width: auto !important; 
+    height: 46vh; 
+    z-index: 13; 
     object-fit: contain;
     transform-origin: bottom center; 
 }
 
-.left-stick-child {
-    left: 34%;               
-    transform: translate(0, -100%) rotate(-4deg); 
-}
-
-.right-stick-child {
-    right: 30%;              
-    transform: translate(0, -100%) rotate(6deg);
-}
+.left-stick-child { left: 34%; transform: translate(0, -100%) rotate(-4deg); }
+.right-stick-child { right: 30%; transform: translate(0, -100%) rotate(6deg); }
 
 .zigzag-rope {
     position: absolute;
@@ -541,10 +508,8 @@ img[src*="Spray"].tool-item.dragging {
     width: 100%;
     height: 100%;
     pointer-events: none; 
-   // z-index: 12; 
     overflow: visible !important; 
 }
-
 
 .zigzag-rope .rope-guide {
     fill: none;
@@ -584,7 +549,6 @@ img[src*="Spray"].tool-item.dragging {
     transform: translate(-50%, -50%) scale(0);
 }
 
-
 .final-rope-image {
     position: absolute;
     top: 0;
@@ -592,60 +556,21 @@ img[src*="Spray"].tool-item.dragging {
     width: 100%;
     height: 100%;
     object-fit: contain;
-    z-index: 12;         
+    z-index: 12; 
     pointer-events: none; 
     animation: ropeAppear 0.4s ease-out; 
 }
 
 @keyframes ropeAppear {
-    from {
-        opacity: 0;
-        transform: scale(0.98);
-    }
-    to {
-        opacity: 1;
-        transform: scale(1);
-    }
+    from { opacity: 0; transform: scale(0.98); }
+    to { opacity: 1; transform: scale(1); }
 }
 
 .final-pot-image {
-    width: 100%;             
+    width: 100%; 
     height: auto;
     object-fit: contain;
-    z-index: 11;             
-}
-
-/*
-.final-pot-image.stage-0 {
-    width: 100% !important;
-}
-
-.final-pot-image.stage-1,
-.final-pot-image.stage-2 {
-    width: 67% !important;
-}
-*/
-.hub-item.task1 { width: 12%; }
-.hub-item.task2 { width: 37%; }
-.hub-item.task3 { width: 19%; }
-
-.hub-item.task1.completed { width: 12%; } 
-.hub-item.task2.completed { 
-    width: 34%;
-    left: 29% !important;
-}
-.hub-item.task3.completed { width: 20%; }
-
-.hub-item {
-    position: absolute;
-    cursor: pointer;
-    transition: transform 0.2s ease, width 0.3s ease; 
-    object-fit: contain;
-}
-
-.hub-item.completed {
-    cursor: default;
-    opacity: 1;
+    z-index: 11; 
 }
 
 .confetti {
@@ -671,23 +596,23 @@ img[src*="Spray"].tool-item.dragging {
 
 .task3-pot-zone {
     position: absolute;
-    width: 25%;              
-    height: 55vh;          
+    width: 25%; 
+    height: 55vh; 
     left: 50%;
-    bottom: 10%;            
+    bottom: 10%; 
     transform: translateX(-50%);
-    pointer-events: none;    
+    pointer-events: none; 
     z-index: 10;
     display: flex;
     justify-content: center;
-    align-items: flex-end;   
+    align-items: flex-end; 
 }
 
 .task3-pot-element {
-    width: 100%;              
+    width: 100%; 
     height: auto;
     object-fit: contain;
-    z-index: 11;             
+    z-index: 11; 
 }
 
 #bugs-container {
@@ -718,7 +643,6 @@ img[src*="Spray"].tool-item.dragging {
     100% { transform: translate(0, 0) rotate(0deg); }
 }
 
-
 #leaves-container {
     position: absolute;
     top: 14px;
@@ -740,19 +664,12 @@ img[src*="Spray"].tool-item.dragging {
 }
 
 @keyframes leaf-fall-anim {
-    0% { 
-        transform: translateY(0) rotate(0deg); 
-        opacity: 1; 
-    }
-    100% { 
-        transform: translateY(300px) rotate(70deg); 
-        opacity: 0; 
-    }
+    0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+    100% { transform: translateY(300px) rotate(70deg); opacity: 0; }
 }
 
-.falling-leaf {
-    animation: leaf-fall-anim 1s ease-in forwards !important;
-}
+.falling-leaf { animation: leaf-fall-anim 1s ease-in forwards !important; }
+.falling-bug { animation: bug-fall-anim 1s ease-in forwards !important; }
 
 .spray-animation {
     position: absolute;
@@ -767,73 +684,12 @@ img[src*="Spray"].tool-item.dragging {
     margin-top: -55px;
 }
 
-.spray-animation.active {
-    animation: spray-puff 0.5s ease-out forwards;
-}
+.spray-animation.active { animation: spray-puff 0.5s ease-out forwards; }
 
 @keyframes spray-puff {
-    0% {
-        opacity: 0.9;
-        transform: scale(0.3) translateX(0); 
-    }
-    100% {
-        opacity: 0;
-        transform: scale(2.5) translateX(25px); 
-    }
+    0% { opacity: 0.9; transform: scale(0.3) translateX(0); }
+    100% { opacity: 0; transform: scale(2.5) translateX(25px); }
 }
-
-@keyframes bug-fall-anim {
-    0% {
-        transform: translateY(0) rotate(0deg);
-        opacity: 1;
-    }
-
-    20% {
-        transform: translateY(-20px) rotate(180deg);
-        opacity: 1;
-    }
-
-    100% {
-        transform: translateY(300px) rotate(180deg); 
-        opacity: 0;
-    }
-}
-
-.falling-bug {
-    animation: bug-fall-anim 1s ease-in forwards !important;
-}
-
-.tool-slot {
-    position: relative;
-    width: 100px;
-    height: 100px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.stacked-tool {
-    position: absolute;
-}
-
-.tool-count {
-    position: absolute;
-    bottom: 5px;
-    right: 5px;
-    background: #e50914;
-    color: white;
-    border-radius: 50%;
-    width: 24px;
-    height: 24px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-weight: bold;
-    z-index: 10;
-    pointer-events: none; 
-}
-
-
 
 .drop-particle {
     width: 15px; 
@@ -842,16 +698,12 @@ img[src*="Spray"].tool-item.dragging {
     z-index: 9999;
     animation: drop-fall 0.5s ease-in forwards;
 }
+
 @keyframes drop-fall {
     0% { transform: translate(-50%, -50%) scale(0.5); opacity: 1; }
     100% { transform: translate(calc(-50% + var(--offsetX)), 150px) scale(1.2); opacity: 0; }
 }
-/*
-@keyframes drop-fall {
-    0% { transform: translate(var(--startX), var(--startY)) scale(0.5); opacity: 1; }
-    100% { transform: translate(var(--endX), calc(var(--startY) + 150px)) scale(1.2); opacity: 0; }
-}
-*/
+
 .mist-particle {
     width: 40px; 
     height: auto;
@@ -859,12 +711,8 @@ img[src*="Spray"].tool-item.dragging {
     z-index: 9999;
     animation: mist-puff 0.5s ease-out forwards;
 }
+
 @keyframes mist-puff {
     0% { transform: translate(-50%, -50%) scale(0.3); opacity: 0.9; }
     100% { transform: translate(calc(-50% + var(--dirX)), calc(-50% + var(--dirY))) scale(2.5); opacity: 0; }
 }
-/*
-@keyframes mist-puff {
-    0% { transform: translate(var(--startX), var(--startY)) scale(0.3); opacity: 0.9; }
-    100% { transform: translate(calc(var(--startX) + var(--dirX)), calc(var(--startY) + var(--dirY))) scale(2.5); opacity: 0; }
-}*/

@@ -1,5 +1,6 @@
 import Level_2 from '../levels/Level_2.js'; 
 import Toolbox from '../Tools/Toolbox.js'; 
+import { soundManager } from '../Tools/SoundManager.js';
 
 export default class Task_3 {
     constructor(container) {
@@ -159,6 +160,26 @@ export default class Task_3 {
         if (this.bugsAnimInterval) clearInterval(this.bugsAnimInterval);
         
         this.bugsAnimInterval = setInterval(() => {
+
+            if (typeof soundManager !== 'undefined') {
+                soundManager.playLoop('bugCrawl');
+            }
+            const allBugs = document.querySelectorAll('.bug-element');
+            
+            allBugs.forEach(bug => {
+                if (bug.dataset.isDead === "true") return; 
+
+                let frame = parseInt(bug.dataset.currentFrame);
+                frame = (frame + 1) % bugFrames.length; 
+                
+                bug.dataset.currentFrame = frame;
+                bug.src = bugFrames[frame];
+            });
+        }, 100); 
+
+        if (this.bugsAnimInterval) clearInterval(this.bugsAnimInterval);
+        
+        this.bugsAnimInterval = setInterval(() => {
             const allBugs = document.querySelectorAll('.bug-element');
             
             allBugs.forEach(bug => {
@@ -199,6 +220,9 @@ export default class Task_3 {
 
     onBackClick(e) {
         e.stopPropagation();
+        
+        if (typeof soundManager !== 'undefined') soundManager.play('clickSound');
+        
         this.container.classList.add('fade-out');
 
         setTimeout(() => {
@@ -250,12 +274,26 @@ export default class Task_3 {
                     easing: 'ease-in',
                     fill: 'forwards'
                 });
+                                
+                target.style.animation = 'none'; 
+
+                target.animate([
+                    { transform: 'translateY(0) scale(1)', opacity: 1 },
+                    { transform: 'translateY(300px) scale(0.8)', opacity: 0 }
+                ], {
+                    duration: 1000,
+                    easing: 'ease-in',
+                    fill: 'forwards'
+                });
 
                 setTimeout(() => {
                     target.remove();
                     const remainingBugs = document.querySelectorAll('.bug-element').length;
                     if (remainingBugs === 0) {
                         this.toolbox.resetActiveTool();
+                        if (typeof soundManager !== 'undefined') {
+                            soundManager.stop('bugCrawl');
+                        }
                     }
                 }, 1000);
             }
@@ -294,6 +332,10 @@ export default class Task_3 {
         const spoutY = clientY + 10;
 
         if (!this.dropInterval) {
+
+            if (typeof soundManager !== 'undefined') {
+                soundManager.play('water');
+            }
             this.dropInterval = setInterval(() => {
                 this.toolbox.spawnParticle('water', spoutX, spoutY);
             }, 50);
@@ -317,6 +359,7 @@ export default class Task_3 {
 
             if (this.wateringProgress >= 100) {
                 this.wateringProgress = 0; 
+                stageTransitioned = true; 
                 stageTransitioned = true;
 
                 if (this.growthStage < 2) {
@@ -386,10 +429,15 @@ export default class Task_3 {
         if (this.dropInterval) {
             clearInterval(this.dropInterval);
             this.dropInterval = null;
+
+            if (typeof soundManager !== 'undefined') {
+                soundManager.stop('water');
+            }
         }
     }
 
     toggleHint() {
+        if (typeof soundManager !== 'undefined') soundManager.play('clickSound');
         this.hintOverlay.classList.toggle('active');
     }
 

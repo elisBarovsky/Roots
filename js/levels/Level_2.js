@@ -1,6 +1,7 @@
-import Task_1 from '../Tasks/Task_1.js';
+﻿import Task_1 from '../Tasks/Task_1.js';
 import Task_2 from '../Tasks/Task_2.js';
 import Task_3 from '../Tasks/Task_3.js';
+import { soundManager } from '../Tools/SoundManager.js';
 
 export default class Level_2 {
     constructor(container) {
@@ -9,6 +10,7 @@ export default class Level_2 {
         this.onTask1Click = this.onTask1Click.bind(this);
         this.onTask2Click = this.onTask2Click.bind(this);
         this.onTask3Click = this.onTask3Click.bind(this);
+        this.onHover = this.onHover.bind(this); 
     }
 
     init() {
@@ -48,18 +50,34 @@ export default class Level_2 {
             if (this.t3) this.t3.classList.add('magic-item-win');
             window.gameState.task3_just_completed = false;
         }
-        // ==========================================================
 
-        if (!window.gameState.task1_completed) this.t1.addEventListener('click', this.onTask1Click);
-        if (!window.gameState.task2_completed) this.t2.addEventListener('click', this.onTask2Click);
-        if (!window.gameState.task3_completed) this.t3.addEventListener('click', this.onTask3Click);
+        if (!window.gameState.task1_completed) {
+            this.t1.addEventListener('click', this.onTask1Click);
+            this.t1.addEventListener('mouseenter', this.onHover);
+        }
+        if (!window.gameState.task2_completed) {
+            this.t2.addEventListener('click', this.onTask2Click);
+            this.t2.addEventListener('mouseenter', this.onHover);
+        }
+        if (!window.gameState.task3_completed) {
+            this.t3.addEventListener('click', this.onTask3Click);
+            this.t3.addEventListener('mouseenter', this.onHover);
+        }
 
         setTimeout(() => {
             this.container.classList.remove('fade-out');
         }, 50);
     }
 
+    onHover() {
+        if (typeof soundManager !== 'undefined') {
+            soundManager.play('hoverSound'); 
+        }
+    }
+
     onTask1Click() {
+        if (typeof soundManager !== 'undefined') soundManager.play('clickSound');
+        
         this.container.classList.add('fade-out');
 
         setTimeout(() => {
@@ -70,6 +88,8 @@ export default class Level_2 {
     }
 
     onTask2Click() {
+        if (typeof soundManager !== 'undefined') soundManager.play('clickSound');
+        
         this.container.classList.add('fade-out');
         setTimeout(() => {
             this.destroy();
@@ -79,6 +99,8 @@ export default class Level_2 {
     }
 
     onTask3Click() {
+        if (typeof soundManager !== 'undefined') soundManager.play('clickSound');
+        
         this.container.classList.add('fade-out');
         setTimeout(() => {
             this.destroy();
@@ -88,9 +110,18 @@ export default class Level_2 {
     }
 
     destroy() {
-        if (this.t1) this.t1.removeEventListener('click', this.onTask1Click);
-        if (this.t2) this.t2.removeEventListener('click', this.onTask2Click);
-        if (this.t3) this.t3.removeEventListener('click', this.onTask3Click);
+        if (this.t1) {
+            this.t1.removeEventListener('click', this.onTask1Click);
+            this.t1.removeEventListener('mouseenter', this.onHover);
+        }
+        if (this.t2) {
+            this.t2.removeEventListener('click', this.onTask2Click);
+            this.t2.removeEventListener('mouseenter', this.onHover);
+        }
+        if (this.t3) {
+            this.t3.removeEventListener('click', this.onTask3Click);
+            this.t3.removeEventListener('mouseenter', this.onHover);
+        }
         
         this.container.innerHTML = '';
     }

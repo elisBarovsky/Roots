@@ -1,6 +1,7 @@
 import Level_2 from '../levels/Level_2.js'; 
 import Toolbox from '../Tools/Toolbox.js'; 
 
+import { soundManager } from '../Tools/SoundManager.js';
 export default class Task_2 {
     constructor(container) {
         this.container = container;
@@ -133,6 +134,11 @@ export default class Task_2 {
                         if (filledPath) filledPath.setAttribute('points', pointsStr);
 
                         if (Math.hypot(mouseP.x - p2.x, mouseP.y - p2.y) < 35) {
+
+                            if (typeof soundManager !== 'undefined') {
+                                soundManager.play('ropeSound');
+                            } 
+
                             this.currentSegmentIndex++;
                             if (this.currentSegmentIndex >= this.basePoints.length - 1) {
                                 this.completeRopeTask();
@@ -176,6 +182,9 @@ export default class Task_2 {
 
     onBackClick(e) {
         e.stopPropagation();
+        
+        if (typeof soundManager !== 'undefined') soundManager.play('clickSound');
+        
         this.container.classList.add('fade-out');
 
         setTimeout(() => {
@@ -217,6 +226,10 @@ export default class Task_2 {
     }
 
     placeStickPermanent(type, side) {
+
+        if (typeof soundManager !== 'undefined') {
+            soundManager.play('stickSnap');
+        }
         const placedStick = document.createElement('img');
         placedStick.src = `assets/images/Tools/${type}.png`;
         placedStick.className = `placed-stick-child ${side}-stick-child`;
@@ -382,6 +395,10 @@ export default class Task_2 {
         const spoutY = clientY + 10;
 
         if (!this.dropInterval) {
+
+            if (typeof soundManager !== 'undefined') {
+                soundManager.play('water');
+            }
             this.dropInterval = setInterval(() => {
                 this.toolbox.spawnParticle('water', spoutX, spoutY);
             }, 50);
@@ -446,10 +463,14 @@ export default class Task_2 {
         if (this.dropInterval) {
             clearInterval(this.dropInterval);
             this.dropInterval = null;
+            if (typeof soundManager !== 'undefined') {
+                soundManager.stop('water');
+            }
         }
     }
 
     toggleHint() {
+        if (typeof soundManager !== 'undefined') soundManager.play('clickSound');
         this.hintOverlay.classList.toggle('active');
     }
 

@@ -1,4 +1,6 @@
 import Level_2 from './Level_2.js';
+import { soundManager } from '../Tools/SoundManager.js';
+
 export default class Level1 {
     constructor(container) {
         this.container = container;

@@ -1,6 +1,6 @@
 import Level_2 from '../levels/Level_2.js'; 
 import Toolbox from '../Tools/Toolbox.js'; 
-
+import { soundManager } from '../Tools/SoundManager.js';
 export default class Task_1 {
     constructor(container) {
         this.container = container;
@@ -78,6 +78,9 @@ export default class Task_1 {
 
     onBackClick(e) {
         e.stopPropagation();
+        
+        if (typeof soundManager !== 'undefined') soundManager.play('clickSound');
+        
         this.container.classList.add('fade-out');
 
         setTimeout(() => {
@@ -125,7 +128,12 @@ export default class Task_1 {
     }
 
     onPointerUp(e) {
-        this.isDraggingPot = false;
+        if (this.isDraggingPot) {
+            this.isDraggingPot = false;
+            if (typeof soundManager !== 'undefined') {
+                soundManager.play('potDrop');
+            }
+        } 
     }
 
     onSceneClick(e) {
@@ -166,6 +174,10 @@ export default class Task_1 {
         const spoutY = clientY + 10;
 
         if (!this.dropInterval) {
+
+            if (typeof soundManager !== 'undefined') {
+                soundManager.play('water');
+            }
             this.dropInterval = setInterval(() => {
                 this.toolbox.spawnParticle('water', spoutX, spoutY);
             }, 50);
@@ -232,6 +244,10 @@ export default class Task_1 {
         if (this.dropInterval) {
             clearInterval(this.dropInterval);
             this.dropInterval = null;
+
+            if (typeof soundManager !== 'undefined') {
+                soundManager.stop('water');
+            }
         }
     }
 
@@ -261,6 +277,7 @@ export default class Task_1 {
     }
 
     toggleHint() {
+        if (typeof soundManager !== 'undefined') soundManager.play('clickSound');
         this.hintOverlay.classList.toggle('active');
     }
 

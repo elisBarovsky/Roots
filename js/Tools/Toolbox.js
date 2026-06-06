@@ -1,3 +1,6 @@
+import { soundManager } from '../Tools/SoundManager.js';
+
+
 export default class Toolbox {
     constructor(parentContainer) {
         this.parentContainer = parentContainer; 
@@ -42,6 +45,9 @@ export default class Toolbox {
 
         this.toolboxToggle.addEventListener('click', (e) => {
             e.stopPropagation();
+
+            if (typeof soundManager !== 'undefined') soundManager.play('toolBoxSound');
+
             if (this.activeDraggedTool) {
                 this.resetActiveTool();
             } else {
@@ -82,6 +88,9 @@ export default class Toolbox {
     closeDrawer() {
         const toolboxEl = document.getElementById('toolbox-container'); 
         if (toolboxEl && toolboxEl.classList.contains('open')) {
+           
+            if (typeof soundManager !== 'undefined') soundManager.play('toolboxSound');
+
             toolboxEl.classList.remove('open');
         }
         
@@ -93,6 +102,10 @@ export default class Toolbox {
         const toolType = this.getActiveToolType();
 
         if (toolType === 'Scissors') {
+
+            if (typeof soundManager !== 'undefined') {
+                soundManager.play('scissors'); 
+            }
             this.activeDraggedTool.src = 'assets/images/Tools/Close_Scissors.png'; 
             setTimeout(() => {
                 if (this.activeDraggedTool && this.activeDraggedTool.getAttribute('data-tool') === 'Scissors') {
@@ -102,6 +115,11 @@ export default class Toolbox {
         }
 
         if (toolType === 'spray') {
+
+            if (typeof soundManager !== 'undefined') {
+                soundManager.play('spray'); 
+            } 
+
             this.activeDraggedTool.style.setProperty('transform', 'translate(-50%, -10%) scale(1.5) rotate(0deg)', 'important');
             this.activeDraggedTool.src = 'assets/images/Tools/Spray_2.png'; 
 
@@ -177,6 +195,10 @@ export default class Toolbox {
 
         this.activeDraggedTool = tool;
 
+        if (typeof soundManager !== 'undefined') {
+            soundManager.play('pickTool');
+        }
+
         this.toolPlaceholder = document.createElement('div');
         this.toolPlaceholder.style.width = '50px';
         this.toolPlaceholder.style.height = '50px';
@@ -198,6 +220,9 @@ export default class Toolbox {
         this.updateToolPosition(e.clientX, e.clientY);
 
         if (this.toolboxContainer && this.toolboxContainer.classList.contains('expanded')) {
+
+            if (typeof soundManager !== 'undefined') soundManager.play('toolBoxSound');
+
             this.toolboxContainer.classList.remove('expanded');
             
             if (this.toolboxToggle) {
