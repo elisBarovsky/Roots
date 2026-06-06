@@ -12,6 +12,7 @@ Sometimes what helps you remember yourself is taking care of others.
 
 In “Roots”, you’re taking care of different plants, like cherry tomatoes and basil, making sure they get enough sun, water, and love, and on the way you’ll learn to overcome the reason you’re taking care of the plants: your own breakup.
 By utilizing an interactive toolkit. The game focuses on a Unique Selling Point, e.g., providing a serene and immersive experience through creative mechanics.
+
 Roots is a gardening and puzzle-solving game. Players are challenged to nurture unique magical plants and progress through levels.
 
 ## How to Play
