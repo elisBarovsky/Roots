@@ -1,6 +1,7 @@
 import Level_2 from '../levels/Level_2.js'; 
 import Toolbox from '../Tools/Toolbox.js'; 
 import { soundManager } from '../Tools/SoundManager.js';
+
 export default class Task_1 {
     constructor(container) {
         this.container = container;
@@ -8,7 +9,6 @@ export default class Task_1 {
         this.isDraggingPot = false;
         this.isLightZone = false;
         this.growthStage = 0;
-        this.growthInterval = null;
         this.wateringTimeout = null;
         this.dropInterval = null;
 
@@ -23,7 +23,6 @@ export default class Task_1 {
         this.onPointerMove = this.onPointerMove.bind(this);
         this.onPointerUp = this.onPointerUp.bind(this);
         this.onSceneClick = this.onSceneClick.bind(this);
-        this.updateGrowthLogic = this.updateGrowthLogic.bind(this);
         this.onBackClick = this.onBackClick.bind(this); 
     }
 
@@ -31,7 +30,7 @@ export default class Task_1 {
         this.container.innerHTML = `
             <div class="task1-wrapper" id="task1-wrapper">
                 <div class="shadow-overlay"></div>
-                <button class="back-to-hub-btn" id="back-hub-btn" title="חזור לחצר">↩ חזרה</button>
+                <button class="game-btn back-to-hub-btn" id="back-hub-btn" title="חזור לחצר">↩ Back</button>
                 <img src="assets/images/HintBook.png" class="hint-icon" id="hint-btn">
 
                 <div class="hint-overlay" id="hint-overlay">
@@ -50,9 +49,20 @@ export default class Task_1 {
         this.hintBtn = document.getElementById('hint-btn');
         this.hintOverlay = document.getElementById('hint-overlay');
         this.backHubBtn = document.getElementById('back-hub-btn'); 
+        this.closeHintBtn = this.wrapper.querySelector('.close-hint'); 
 
         this.toolbox = new Toolbox(this.wrapper);
         this.toolbox.init();
+
+        const playHoverSound = () => {
+            if (typeof soundManager !== 'undefined') soundManager.play('hoverSound');
+        };
+
+        this.hintBtn.addEventListener('mouseenter', playHoverSound);
+        this.backHubBtn.addEventListener('mouseenter', playHoverSound);
+        if (this.closeHintBtn) {
+            this.closeHintBtn.addEventListener('mouseenter', playHoverSound);
+        }
 
         this.hintBtn.addEventListener('click', this.toggleHint);
         this.hintOverlay.addEventListener('click', this.toggleHint);
@@ -63,17 +73,48 @@ export default class Task_1 {
         window.addEventListener('pointermove', this.onPointerMove);
         window.addEventListener('pointerup', this.onPointerUp);
 
-        this.growthInterval = setInterval(this.updateGrowthLogic, 2000);
-
+        this.isLightZone = false; 
+        this.growthStage = 0;
+        this.item.src = this.potImages[0];
         setTimeout(() => {
             this.container.classList.remove('fade-out');
+
+            this.growthStage = 0;
+            this.item.src = this.potImages[0];
+            
             const rect = this.wrapper.getBoundingClientRect();
             const potRect = this.item.getBoundingClientRect();
             const startX = potRect.left - rect.left + potRect.width / 2;
             const startY = potRect.top - rect.top + potRect.height / 2;
             this.checkDiagonalZone(startX, startY, rect.width, rect.height);
-            
         }, 50);
+    }
+
+    showSuccessMessage() {
+        const popup = document.createElement('div');
+        popup.className = 'success-popup-overlay';
+        
+        popup.innerHTML = `
+            <div class="success-popup-box">
+                <div class="success-popup-text">.The mint spread beyond the edges of its pot </br>
+                    .It never asked whether it was allowed to keep growing</br>
+                    .It just did</div>
+                <button class="game-btn close-popup-btn">Continue</button>
+            </div>
+        `;
+        
+        this.container.appendChild(popup);
+        
+        requestAnimationFrame(() => {
+            popup.classList.add('show');
+        });
+
+        const closeBtn = popup.querySelector('.close-popup-btn');
+        closeBtn.addEventListener('click', () => {
+            if (typeof soundManager !== 'undefined') soundManager.play('clickSound');
+            popup.classList.remove('show');
+            setTimeout(() => popup.remove(), 400); 
+        });
     }
 
     onBackClick(e) {
@@ -91,19 +132,6 @@ export default class Task_1 {
         }, 1500);
     }
 
-    updateGrowthLogic() {
-        if (!this.isLightZone && this.growthStage > 0) {
-            this.growthStage--;
-            this.item.src = this.potImages[this.growthStage];
-            this.wateringProgress = 0;
-
-            if (this.growthStage < 2) {
-                if (!window.gameState) window.gameState = {};
-                window.gameState.task1_completed = false;
-            }
-        }
-    }
-
     onPointerDown(e) {
         if (this.toolbox.getActiveTool()) return;
         e.stopPropagation();
@@ -113,6 +141,7 @@ export default class Task_1 {
 
     onPointerMove(e) {
         if (this.isDraggingPot) {
+            this.hasMoved = true;
             const rect = this.wrapper.getBoundingClientRect();
             let mouseX = e.clientX - rect.left;
             let mouseY = e.clientY - rect.top;
@@ -173,11 +202,11 @@ export default class Task_1 {
         const spoutX = clientX + 80; 
         const spoutY = clientY + 10;
 
-        if (!this.dropInterval) {
+        if (typeof soundManager !== 'undefined') {
+            soundManager.play('water');
+        }
 
-            if (typeof soundManager !== 'undefined') {
-                soundManager.play('water');
-            }
+        if (!this.dropInterval) {
             this.dropInterval = setInterval(() => {
                 this.toolbox.spawnParticle('water', spoutX, spoutY);
             }, 50);
@@ -200,6 +229,11 @@ export default class Task_1 {
                     if (this.growthStage === 2) {
                         this.spawnConfetti();
                         
+                        if (typeof soundManager !== 'undefined') {
+                            soundManager.play('stageComplete');
+                        }
+
+                        this.showSuccessMessage();
                         this.stopWateringEffect();
                         if (this.wateringTimeout) {
                             clearTimeout(this.wateringTimeout);
@@ -271,9 +305,43 @@ export default class Task_1 {
         }
     }
 
-    checkDiagonalZone(x, y, width, height) {
+   checkDiagonalZone(x, y, width, height) {
         const diagonalLineY = (height / width) * x + (height / 3);
+
+        const newIsLight = y < diagonalLineY;
+        
+        if (!this.hasMoved) {
+            this.isLightZone = newIsLight;
+            return; 
+        }
+
+        const wasLightZone = this.isLightZone;
         this.isLightZone = y < diagonalLineY; 
+
+        if (this.isLightZone && !wasLightZone) {
+            if (this.growthStage === 0) {
+                this.growthStage = 1;
+                this.item.src = this.potImages[this.growthStage];
+                this.wateringProgress = 0;
+            }
+        }
+        else if (!this.isLightZone && wasLightZone) {
+            if (this.growthStage === 1) {
+                this.growthStage = 0;
+                this.item.src = this.potImages[this.growthStage];
+                this.wateringProgress = 0;
+                
+                if (window.gameState) {
+                    window.gameState.task1_completed = false;
+                }
+
+                this.stopWateringEffect();
+                if (this.wateringTimeout) {
+                    clearTimeout(this.wateringTimeout);
+                    this.wateringTimeout = null;
+                }
+            }
+        }
     }
 
     toggleHint() {
@@ -282,7 +350,6 @@ export default class Task_1 {
     }
 
     destroy() {
-        if (this.growthInterval) clearInterval(this.growthInterval);
         if (this.wateringTimeout) clearTimeout(this.wateringTimeout);
         if (this.dropInterval) clearInterval(this.dropInterval);
         window.removeEventListener('pointermove', this.onPointerMove);

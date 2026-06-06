@@ -41,7 +41,7 @@ export default class Task_2 {
     init() {
         this.container.innerHTML = `
             <div class="task2-wrapper" id="task2-wrapper">
-                <button class="back-to-hub-btn" id="back-hub-btn" title="חזור לחצר">↩ חזרה</button>
+                <button class="game-btn back-to-hub-btn" id="back-hub-btn" title="חזור לחצר">↩ Back</button>
                 <img src="assets/images/HintBook.png" class="hint-icon" id="hint-btn">
 
                 <div class="hint-overlay" id="hint-overlay">
@@ -64,9 +64,19 @@ export default class Task_2 {
         this.hintBtn = document.getElementById('hint-btn');
         this.hintOverlay = document.getElementById('hint-overlay');
         this.backHubBtn = document.getElementById('back-hub-btn'); 
+        
+        this.closeHintBtn = this.wrapper.querySelector('.close-hint'); 
 
         this.toolbox = new Toolbox(this.wrapper);
         this.toolbox.init();
+
+        const playHoverSound = () => {
+            if (typeof soundManager !== 'undefined') soundManager.play('hoverSound');
+        };
+
+        if (this.hintBtn) this.hintBtn.addEventListener('mouseenter', playHoverSound);
+        if (this.backHubBtn) this.backHubBtn.addEventListener('mouseenter', playHoverSound);
+        if (this.closeHintBtn) this.closeHintBtn.addEventListener('mouseenter', playHoverSound);
 
         this.hintBtn.addEventListener('click', this.toggleHint);
         this.hintOverlay.addEventListener('click', this.toggleHint);
@@ -80,6 +90,33 @@ export default class Task_2 {
         setTimeout(() => {
             this.container.classList.remove('fade-out');
         }, 50);
+    }
+
+    showSuccessMessage() {
+        const popup = document.createElement('div');
+        popup.className = 'success-popup-overlay';
+        
+        popup.innerHTML = `
+            <div class="success-popup-box">
+                <div class="success-popup-text">.The tomato plant leaned on its stakes while it grew</br>
+                    .Needing support never made it weak</br>
+                    .Neither did you</div>
+                <button class="game-btn close-popup-btn">Continue</button>
+            </div>
+        `;
+        
+        this.container.appendChild(popup);
+        
+        requestAnimationFrame(() => {
+            popup.classList.add('show');
+        });
+
+        const closeBtn = popup.querySelector('.close-popup-btn');
+        closeBtn.addEventListener('click', () => {
+            if (typeof soundManager !== 'undefined') soundManager.play('clickSound');
+            popup.classList.remove('show');
+            setTimeout(() => popup.remove(), 400); 
+        });
     }
 
     onPointerDown(e) {
@@ -394,11 +431,12 @@ export default class Task_2 {
         const spoutX = clientX + 80; 
         const spoutY = clientY + 10;
 
-        if (!this.dropInterval) {
 
-            if (typeof soundManager !== 'undefined') {
-                soundManager.play('water');
-            }
+        if (typeof soundManager !== 'undefined') {
+            soundManager.play('water');
+        }
+
+        if (!this.dropInterval) {
             this.dropInterval = setInterval(() => {
                 this.toolbox.spawnParticle('water', spoutX, spoutY);
             }, 50);
@@ -425,9 +463,12 @@ export default class Task_2 {
                 
                 if (this.growthStage === 2) {
                     this.spawnConfetti();
+                    this.showSuccessMessage();
+                    if (typeof soundManager !== 'undefined') {
+                        soundManager.play('stageComplete');
+                    }
                     this.toolbox.resetActiveTool();
 
-                    // --- תוספת: עצירת המים וסגירת המגירה והתיבה ---
                     this.stopWateringEffect();
                     if (this.wateringTimeout) {
                         clearTimeout(this.wateringTimeout);

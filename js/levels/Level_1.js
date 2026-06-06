@@ -25,7 +25,7 @@ export default class Level1 {
                     </div>
                 </div>
                 
-                <button id="next-level-btn">המשך בסיפור</button>
+                <button id="next-level-btn" class="game-btn">Continue</button>
             </div>
         `;
         this.viewport = document.getElementById('game-viewport');
@@ -35,7 +35,7 @@ export default class Level1 {
         this.viewport.addEventListener('mouseleave', this.onMouseLeave);
         this.viewport.addEventListener('mouseup', this.onMouseUp);
         this.viewport.addEventListener('mousemove', this.onMouseMove);
-
+        this.nextBtn.addEventListener('mouseenter', this.onHover);
         this.nextBtn.addEventListener('click', this.onNextClick);
     }
 
@@ -46,6 +46,11 @@ export default class Level1 {
         this.scrollLeft = this.viewport.scrollLeft;
     }
 
+    onHover() {
+        if (typeof soundManager !== 'undefined') {
+            soundManager.play('hoverSound'); 
+        }
+    }
     onMouseLeave() {
         this.isDown = false;
         this.viewport.classList.remove('active');
@@ -60,7 +65,7 @@ export default class Level1 {
         if (!this.isDown) return;
         e.preventDefault();
         const x = e.pageX - this.viewport.offsetLeft;
-        const walk = (x - this.startX) * 1.5; // מהירות הגרירה
+        const walk = (x - this.startX) * 1.5; 
         this.viewport.scrollLeft = this.scrollLeft - walk;
 
         this.checkEndReached();
@@ -86,7 +91,8 @@ export default class Level1 {
 
         setTimeout(() => {
             this.destroy();
-
+            
+            if (typeof soundManager !== 'undefined') soundManager.play('clickSound');
             const level2 = new Level_2(this.container);
             level2.init();
 

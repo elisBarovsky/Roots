@@ -5,6 +5,43 @@ body, html {
     height: 100%;
     background-color: #000;
     overflow: hidden; 
+    font-family: 'Fredoka', sans-serif;
+}
+
+button {
+    font-family: inherit;
+}
+
+.game-btn {
+    font-family: inherit; 
+    background-color: #84cc16; 
+    color: white;
+    border: 3px solid #4d7c0f; 
+    border-radius: 16px; 
+    padding: 10px 24px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 5px 0 #4d7c0f, 0 8px 10px rgba(0,0,0,0.15); 
+    transition: all 0.1s ease;
+    text-transform: uppercase; 
+    letter-spacing: 1px;
+}
+
+
+.game-btn:hover {
+    background-color: #a3e635; 
+    transform: translateY(-2px); 
+    box-shadow: 0 7px 0 #4d7c0f, 0 10px 12px rgba(0,0,0,0.2);
+}
+
+.game-btn:active {
+    transform: translateY(5px); 
+    box-shadow: 0 0 0 #4d7c0f, 0 2px 5px rgba(0,0,0,0.2); 
+}
+
+.hint-content-wrapper {
+    font-family: 'Kalam', cursive;
 }
 
 .main-menu-wrapper {
@@ -195,8 +232,8 @@ body, html {
     position: absolute;
     width: 16%;
     height: auto; 
-    top: 50%;
-    left: 50%;
+    top: 57%;
+    left: 32%;
     transform: translate(-50%, -50%); 
     cursor: grab;
     user-select: none;
@@ -269,7 +306,7 @@ body, html {
 .close-hint {
     position: absolute;
     top: -45px;
-    left: 0.5%; 
+    left: 7%; 
     color: white;
     font-size: 45px;
     font-weight: bold;
@@ -540,8 +577,8 @@ img[src*="Spray"].tool-item.dragging {
 }
 
 .rope-waypoint.active-target {
-    background-color: rgba(255, 251, 0, 0.2);
-    box-shadow: 0 0 10px rgba(255, 251, 0, 0.6);
+    background-color: rgb(255 251 0 / 74%);
+    box-shadow: 0 0 10px rgb(255 251 0);
 }
 
 .rope-waypoint.completed {
@@ -645,12 +682,12 @@ img[src*="Spray"].tool-item.dragging {
 
 #leaves-container {
     position: absolute;
-    top: 14px;
-    left: 0;
-    width: 100%;
-    height: 53%;
+    top: 50px;
+    left: 15px;
+    width: 96%;
+    height: 45%;
     z-index: 12;
-    pointer-events: none; 
+    pointer-events: none;
 }
 
 .leaf-element {
@@ -715,4 +752,73 @@ img[src*="Spray"].tool-item.dragging {
 @keyframes mist-puff {
     0% { transform: translate(-50%, -50%) scale(0.3); opacity: 0.9; }
     100% { transform: translate(calc(-50% + var(--dirX)), calc(-50% + var(--dirY))) scale(2.5); opacity: 0; }
+}
+
+.success-popup-overlay {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10000; 
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+}
+
+.success-popup-overlay.show {
+    opacity: 1;
+    pointer-events: all;
+}
+
+.success-popup-box {
+    background: #ffffff;
+    border: 4px solid #84cc16;
+    border-radius: 20px;
+    padding: 30px 40px;
+    text-align: center;
+    max-width: 80%;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+    transform: scale(0.5);
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+}
+
+.success-popup-overlay.show .success-popup-box {
+    transform: scale(1);
+}
+
+.success-popup-text {
+    font-family: inherit;
+    font-size: 1.5rem;
+    color: #4d7c0f;
+    margin-bottom: 25px;
+    line-height: 1.4;
+    direction: rtl; 
+}
+
+.status-banner {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%) translateY(-100px); 
+    background: rgba(255, 255, 255, 0.9);
+    padding: 15px 30px;
+    border-radius: 50px;
+    border: 2px solid #84cc16;
+    color: #4d7c0f;
+    font-family: inherit;
+    font-weight: bold;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    z-index: 9999;
+    pointer-events: none;
+    font-size: 20px;
+    text-align: center;     
+    white-space: pre-line;   
+    min-width: 250px;        
+}
+
+.status-banner.show {
+    transform: translateX(-50%) translateY(0); 
 }

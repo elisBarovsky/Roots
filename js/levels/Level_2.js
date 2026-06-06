@@ -14,6 +14,11 @@ export default class Level_2 {
     }
 
     init() {
+
+        if (typeof soundManager !== 'undefined') {
+            soundManager.playBackgroundMusic();
+        }
+        
         const t1 = window.gameState.task1_completed ? 'FloweringPot.png' : 'DryPot.png';
         const t2 = window.gameState.task2_completed ? 'PotWithThread_3.png' : 'BasePot.png';
         const t3 = window.gameState.task3_completed ? 'Third_Pot.png' : 'First_Pot.png';
@@ -28,7 +33,7 @@ export default class Level_2 {
             
             <img id="task1-item" src="assets/images/Task_1/items/${t1}" class="hub-item task1 ${c1}" style="bottom: 15%; left: 13%;">
             <img id="task2-item" src="assets/images/Task_2/items/${t2}" class="hub-item task2 ${c2}" style="bottom: 14%; left: 28%;">
-            <img id="task3-item" src="assets/images/Task_3/items/${t3}" class="hub-item task3 ${c3}" style="bottom: 10%; right: 13%;">
+            <img id="task3-item" src="assets/images/Task_3/items/${t3}" class="hub-item task3 ${c3}" style="bottom: 13%; right: 13%;">
         </div>
         `;
 
@@ -64,11 +69,33 @@ export default class Level_2 {
             this.t3.addEventListener('mouseenter', this.onHover);
         }
 
+        if (window.gameState && 
+            window.gameState.task1_completed && 
+            window.gameState.task2_completed && 
+            window.gameState.task3_completed) {
+        
+            this.showStatusBanner("You started by taking care of someone else's plants\nSomewhere along the way, you learned how to take care of yourself too");
+        }
         setTimeout(() => {
             this.container.classList.remove('fade-out');
         }, 50);
     }
 
+    showStatusBanner(text) {
+        const banner = document.createElement('div');
+        banner.className = 'status-banner';
+        banner.innerText = text;
+        document.body.appendChild(banner);
+        
+        // מופיע
+        requestAnimationFrame(() => banner.classList.add('show'));
+        
+        // // נעלם אחרי 4 שניות
+        // setTimeout(() => {
+        //     banner.classList.remove('show');
+        //     setTimeout(() => banner.remove(), 500);
+        // }, 4000);
+    }
     onHover() {
         if (typeof soundManager !== 'undefined') {
             soundManager.play('hoverSound'); 

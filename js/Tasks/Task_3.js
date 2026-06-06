@@ -24,7 +24,7 @@ export default class Task_3 {
     init() {
         this.container.innerHTML = `
             <div class="task3-wrapper" id="task3-wrapper">
-                <button class="back-to-hub-btn" id="back-hub-btn" title="חזור לחצר">↩ חזרה</button>
+                <button class="game-btn back-to-hub-btn" id="back-hub-btn" title="חזור לחצר">↩ Back</button>
                 <img src="assets/images/HintBook.png" class="hint-icon" id="hint-btn">
 
                 <div class="hint-overlay" id="hint-overlay">
@@ -48,9 +48,20 @@ export default class Task_3 {
         this.hintBtn = document.getElementById('hint-btn');
         this.hintOverlay = document.getElementById('hint-overlay');
         this.backHubBtn = document.getElementById('back-hub-btn'); 
+        
+        this.closeHintBtn = this.wrapper.querySelector('.close-hint'); 
 
         this.toolbox = new Toolbox(this.wrapper);
         this.toolbox.init();
+
+        const playHoverSound = () => {
+            if (typeof soundManager !== 'undefined') soundManager.play('hoverSound');
+        };
+
+        if (this.hintBtn) this.hintBtn.addEventListener('mouseenter', playHoverSound);
+        if (this.backHubBtn) this.backHubBtn.addEventListener('mouseenter', playHoverSound);
+        if (this.closeHintBtn) this.closeHintBtn.addEventListener('mouseenter', playHoverSound);
+        // ===================================
 
         this.hintBtn.addEventListener('click', this.toggleHint);
         this.hintOverlay.addEventListener('click', this.toggleHint);
@@ -64,6 +75,33 @@ export default class Task_3 {
         }, 50);
 
         this.spawnLeaves();
+    }
+
+    showSuccessMessage() {
+        const popup = document.createElement('div');
+        popup.className = 'success-popup-overlay';
+        
+        popup.innerHTML = `
+            <div class="success-popup-box">
+                <div class="success-popup-text">.The tomato plant leaned on its stakes while it grew</br>
+                    .Needing support never made it weak</br>
+                    .Neither did you</div>
+                <button class="game-btn close-popup-btn">Continue</button>
+            </div>
+        `;
+        
+        this.container.appendChild(popup);
+        
+        requestAnimationFrame(() => {
+            popup.classList.add('show');
+        });
+
+        const closeBtn = popup.querySelector('.close-popup-btn');
+        closeBtn.addEventListener('click', () => {
+            if (typeof soundManager !== 'undefined') soundManager.play('clickSound');
+            popup.classList.remove('show');
+            setTimeout(() => popup.remove(), 400); 
+        });
     }
 
     spawnLeaves() {
@@ -157,25 +195,9 @@ export default class Task_3 {
             bugsContainer.appendChild(bug);
         }
 
-        if (this.bugsAnimInterval) clearInterval(this.bugsAnimInterval);
-        
-        this.bugsAnimInterval = setInterval(() => {
-
-            if (typeof soundManager !== 'undefined') {
-                soundManager.playLoop('bugCrawl');
-            }
-            const allBugs = document.querySelectorAll('.bug-element');
-            
-            allBugs.forEach(bug => {
-                if (bug.dataset.isDead === "true") return; 
-
-                let frame = parseInt(bug.dataset.currentFrame);
-                frame = (frame + 1) % bugFrames.length; 
-                
-                bug.dataset.currentFrame = frame;
-                bug.src = bugFrames[frame];
-            });
-        }, 100); 
+        if (typeof soundManager !== 'undefined') {
+            soundManager.playLoop('bugCrawl');
+        }
 
         if (this.bugsAnimInterval) clearInterval(this.bugsAnimInterval);
         
@@ -238,9 +260,11 @@ export default class Task_3 {
         if (!toolType) return;
 
         const target = e.target;
-        this.toolbox.playToolAnimation(); 
 
         if (toolType === 'Scissors') {
+
+            this.toolbox.playToolAnimation(); 
+
             if (target.classList.contains('eaten-leaf')) {
                 target.classList.add('falling-leaf');
                 target.style.pointerEvents = 'none'; 
@@ -250,8 +274,11 @@ export default class Task_3 {
         }
 
         if (toolType === 'spray') {
-            const nozzleX = e.clientX + 15; 
-            const nozzleY = e.clientY - 65; 
+
+            this.toolbox.playToolAnimation(); 
+
+            const nozzleX = e.clientX + 20; 
+            const nozzleY = e.clientY - 40; 
             
             for(let i = 0; i < 4; i++) {
                 this.toolbox.spawnParticle('spray', nozzleX, nozzleY);
@@ -263,18 +290,6 @@ export default class Task_3 {
                 target.src = 'assets/images/Task_3/items/DeadBug.png';
                 target.dataset.isDead = "true"; 
                 target.style.pointerEvents = 'none';
-                
-                target.style.animation = 'none'; 
-
-                target.animate([
-                    { transform: 'translateY(0) scale(1)', opacity: 1 },
-                    { transform: 'translateY(300px) scale(0.8)', opacity: 0 }
-                ], {
-                    duration: 1000,
-                    easing: 'ease-in',
-                    fill: 'forwards'
-                });
-                                
                 target.style.animation = 'none'; 
 
                 target.animate([
@@ -312,7 +327,7 @@ export default class Task_3 {
                 e.clientY <= (potRect.bottom + paddingBottom);
 
             if (isOverPot) {
-                if (typeof this.isLightZone !== 'undefined' && !this.isLightZone) return; 
+
                 this.triggerWateringPour(e.clientX, e.clientY);
                 return;
             }
@@ -331,11 +346,11 @@ export default class Task_3 {
         const spoutX = clientX + 80; 
         const spoutY = clientY + 10;
 
-        if (!this.dropInterval) {
+        if (typeof soundManager !== 'undefined') {
+            soundManager.play('water');
+        }
 
-            if (typeof soundManager !== 'undefined') {
-                soundManager.play('water');
-            }
+        if (!this.dropInterval) {
             this.dropInterval = setInterval(() => {
                 this.toolbox.spawnParticle('water', spoutX, spoutY);
             }, 50);
@@ -359,7 +374,6 @@ export default class Task_3 {
 
             if (this.wateringProgress >= 100) {
                 this.wateringProgress = 0; 
-                stageTransitioned = true; 
                 stageTransitioned = true;
 
                 if (this.growthStage < 2) {
@@ -383,9 +397,13 @@ export default class Task_3 {
                         this.spawnBugs();
                     }
                     
-                if (this.growthStage === 2) {
+                    if (this.growthStage === 2) {
                         this.spawnConfetti(); 
+                        this.showSuccessMessage();
 
+                        if (typeof soundManager !== 'undefined') {
+                            soundManager.play('stageComplete');
+                        }
                         this.stopWateringEffect();
                         if (this.wateringTimeout) {
                             clearTimeout(this.wateringTimeout);
@@ -420,6 +438,34 @@ export default class Task_3 {
             }, 800);
         }
     }
+
+    showSuccessMessage() {
+        const popup = document.createElement('div');
+        popup.className = 'success-popup-overlay';
+        
+        popup.innerHTML = `
+            <div class="success-popup-box">
+                <div class="success-popup-text">.The basil grew fuller with every careful trim</br>
+                    .Letting go of a little made room for more</br>
+                    .Strange how often that happens</div>
+                <button class="game-btn close-popup-btn">Continue</button>
+            </div>
+        `;
+        
+        this.container.appendChild(popup);
+        
+        requestAnimationFrame(() => {
+            popup.classList.add('show');
+        });
+
+        const closeBtn = popup.querySelector('.close-popup-btn');
+        closeBtn.addEventListener('click', () => {
+            if (typeof soundManager !== 'undefined') soundManager.play('clickSound');
+            popup.classList.remove('show');
+            setTimeout(() => popup.remove(), 400); 
+        });
+    }
+
 
     stopWateringEffect() {
         const activeTool = this.toolbox.getActiveTool();

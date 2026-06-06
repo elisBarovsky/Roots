@@ -1,6 +1,5 @@
 import { soundManager } from '../Tools/SoundManager.js';
 
-
 export default class Toolbox {
     constructor(parentContainer) {
         this.parentContainer = parentContainer; 
@@ -16,12 +15,18 @@ export default class Toolbox {
     }
 
     init() {
-        const toolboxHTML = `
+    const toolboxHTML = `
             <div class="toolbox-container" id="toolbox-container">
                 <img src="assets/images/Tools/toolbox_close.png" class="toolbox-icon" id="toolbox-toggle">
                 <div class="toolbox-panel" id="toolbox-panel">
-                    <img src="assets/images/Tools/watering_can.png" class="tool-item" data-tool="watering_can" title="משפך">
-                    <img src="assets/images/Tools/Thread.png" class="tool-item" data-tool="Thread" title="סליל">
+                    
+                    <div class="tool-slot" title="משפך">
+                        <img src="assets/images/Tools/watering_can.png" class="tool-item" data-tool="watering_can">
+                    </div>
+                    
+                    <div class="tool-slot" title="סליל">
+                        <img src="assets/images/Tools/Thread.png" class="tool-item" data-tool="Thread">
+                    </div>
                     
                     <div class="tool-slot" title="מקלות">
                         <span class="tool-count" id="sticks-count">2</span>
@@ -29,11 +34,26 @@ export default class Toolbox {
                         <img src="assets/images/Tools/Stick_1.png" class="tool-item stacked-tool" data-tool="Stick_1">
                     </div>
 
-                    <img src="assets/images/Tools/Bee.png" class="tool-item" data-tool="Bee" title="מקל דבורה">
-                    <img src="assets/images/Tools/Open_Scissors.png" class="tool-item" data-tool="Scissors" title="מספריים">
-                    <img src="assets/images/Tools/shovel.png" class="tool-item" data-tool="shovel" title="חפירה">
-                    <img src="assets/images/Tools/Spray_1.png" class="tool-item" data-tool="spray" title="ספריי">
-                    <img src="assets/images/Tools/Hand_saw.png" class="tool-item" data-tool="Hand_saw" title="מסור ידני">
+                    <div class="tool-slot" title="מקל דבורה">
+                        <img src="assets/images/Tools/Bee.png" class="tool-item" data-tool="Bee">
+                    </div>
+                    
+                    <div class="tool-slot" title="מספריים">
+                        <img src="assets/images/Tools/Open_Scissors.png" class="tool-item" data-tool="Scissors">
+                    </div>
+                    
+                    <div class="tool-slot" title="חפירה">
+                        <img src="assets/images/Tools/shovel.png" class="tool-item" data-tool="shovel">
+                    </div>
+                    
+                    <div class="tool-slot" title="ספריי">
+                        <img src="assets/images/Tools/Spray_1.png" class="tool-item" data-tool="spray">
+                    </div>
+                    
+                    <div class="tool-slot" title="מסור ידני">
+                        <img src="assets/images/Tools/Hand_saw.png" class="tool-item" data-tool="Hand_saw">
+                    </div>
+
                 </div>
             </div>
         `;
@@ -43,10 +63,18 @@ export default class Toolbox {
         this.toolboxContainer = document.getElementById('toolbox-container');
         this.toolboxToggle = document.getElementById('toolbox-toggle');
 
+        this.toolboxToggle.addEventListener('mouseenter', () => {
+            if (typeof soundManager !== 'undefined') {
+                soundManager.play('hoverSound');
+            }
+        });
+
         this.toolboxToggle.addEventListener('click', (e) => {
             e.stopPropagation();
 
-            if (typeof soundManager !== 'undefined') soundManager.play('toolBoxSound');
+            if (typeof soundManager !== 'undefined'){
+                soundManager.play('toolBoxSound');
+            } 
 
             if (this.activeDraggedTool) {
                 this.resetActiveTool();
@@ -71,6 +99,10 @@ export default class Toolbox {
         const tools = this.parentContainer.querySelectorAll('.tool-item');
         tools.forEach(tool => {
             tool.addEventListener('click', (e) => this.selectTool(e, tool));
+            
+            tool.addEventListener('mouseenter', () => {
+                if (typeof soundManager !== 'undefined') soundManager.play('hoverSound');
+            });
         });
 
         window.addEventListener('pointermove', this.onPointerMove);
@@ -88,8 +120,9 @@ export default class Toolbox {
     closeDrawer() {
         const toolboxEl = document.getElementById('toolbox-container'); 
         if (toolboxEl && toolboxEl.classList.contains('open')) {
-           
-            if (typeof soundManager !== 'undefined') soundManager.play('toolboxSound');
+            if (typeof soundManager !== 'undefined'){
+                soundManager.play('toolBoxSound');
+            } 
 
             toolboxEl.classList.remove('open');
         }
@@ -220,9 +253,9 @@ export default class Toolbox {
         this.updateToolPosition(e.clientX, e.clientY);
 
         if (this.toolboxContainer && this.toolboxContainer.classList.contains('expanded')) {
-
-            if (typeof soundManager !== 'undefined') soundManager.play('toolBoxSound');
-
+            if (typeof soundManager !== 'undefined'){
+                soundManager.play('toolBoxSound');
+            } 
             this.toolboxContainer.classList.remove('expanded');
             
             if (this.toolboxToggle) {
