@@ -3,7 +3,7 @@
 Welcome to **Roots**! An interactive point-and-click game developed as an academic project at Shenkar College.
 
 ## Project Team
-* **Elis Barovsky**
+* **Ellis Barovsky**
 * **Hadar Har-Tzvi**
 * **Niv Kadria**
 
