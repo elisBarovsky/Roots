@@ -61,7 +61,6 @@ export default class Task_3 {
         if (this.hintBtn) this.hintBtn.addEventListener('mouseenter', playHoverSound);
         if (this.backHubBtn) this.backHubBtn.addEventListener('mouseenter', playHoverSound);
         if (this.closeHintBtn) this.closeHintBtn.addEventListener('mouseenter', playHoverSound);
-        // ===================================
 
         this.hintBtn.addEventListener('click', this.toggleHint);
         this.hintOverlay.addEventListener('click', this.toggleHint);
@@ -75,33 +74,6 @@ export default class Task_3 {
         }, 50);
 
         this.spawnLeaves();
-    }
-
-    showSuccessMessage() {
-        const popup = document.createElement('div');
-        popup.className = 'success-popup-overlay';
-        
-        popup.innerHTML = `
-            <div class="success-popup-box">
-                <div class="success-popup-text">.The tomato plant leaned on its stakes while it grew</br>
-                    .Needing support never made it weak</br>
-                    .Neither did you</div>
-                <button class="game-btn close-popup-btn">Continue</button>
-            </div>
-        `;
-        
-        this.container.appendChild(popup);
-        
-        requestAnimationFrame(() => {
-            popup.classList.add('show');
-        });
-
-        const closeBtn = popup.querySelector('.close-popup-btn');
-        closeBtn.addEventListener('click', () => {
-            if (typeof soundManager !== 'undefined') soundManager.play('clickSound');
-            popup.classList.remove('show');
-            setTimeout(() => popup.remove(), 400); 
-        });
     }
 
     spawnLeaves() {
@@ -267,13 +239,35 @@ export default class Task_3 {
 
             if (target.classList.contains('eaten-leaf')) {
                 target.classList.add('falling-leaf');
+                target.classList.remove('eaten-leaf'); 
                 target.style.pointerEvents = 'none'; 
+                
                 setTimeout(() => target.remove(), 1000); 
+
+                const remainingLeaves = document.querySelectorAll('.eaten-leaf').length;
+                
+                if (remainingLeaves === 0 && this.growthStage === 0) {
+                    this.growthStage = 1; 
+
+                    setTimeout(() => {
+
+                        if (this.potImages[this.growthStage]) {
+                            this.item.src = this.potImages[this.growthStage];
+                        }
+                        
+                        const leavesContainer = document.getElementById('leaves-container');
+                        if (leavesContainer) leavesContainer.innerHTML = ''; 
+                        
+                        this.toolbox.resetActiveTool();
+                        this.spawnBugs(); 
+                        
+                    }, 1000); 
+                }
             }
             return; 
         }
 
-        if (toolType === 'spray') {
+       if (toolType === 'spray') {
 
             this.toolbox.playToolAnimation(); 
 
@@ -284,34 +278,47 @@ export default class Task_3 {
                 this.toolbox.spawnParticle('spray', nozzleX, nozzleY);
             }
 
-            if (target.classList.contains('bug-element')) {
-                if (target.dataset.isDead === "true") return; 
 
-                target.src = 'assets/images/Task_3/items/DeadBug.png';
-                target.dataset.isDead = "true"; 
-                target.style.pointerEvents = 'none';
-                target.style.animation = 'none'; 
+            const sprayRadius = 100; 
+            const allBugs = document.querySelectorAll('.bug-element');
 
-                target.animate([
-                    { transform: 'translateY(0) scale(1)', opacity: 1 },
-                    { transform: 'translateY(300px) scale(0.8)', opacity: 0 }
-                ], {
-                    duration: 1000,
-                    easing: 'ease-in',
-                    fill: 'forwards'
-                });
+            allBugs.forEach(bug => {
+                if (bug.dataset.isDead === "true") return; 
 
-                setTimeout(() => {
-                    target.remove();
-                    const remainingBugs = document.querySelectorAll('.bug-element').length;
-                    if (remainingBugs === 0) {
-                        this.toolbox.resetActiveTool();
-                        if (typeof soundManager !== 'undefined') {
-                            soundManager.stop('bugCrawl');
+                const rect = bug.getBoundingClientRect();
+                const bugCenterX = rect.left + rect.width / 2;
+                const bugCenterY = rect.top + rect.height / 2;
+
+                const distance = Math.hypot(bugCenterX - e.clientX, bugCenterY - e.clientY);
+
+                if (distance <= sprayRadius) {
+                    bug.src = 'assets/images/Task_3/items/DeadBug.png';
+                    bug.dataset.isDead = "true"; 
+                    bug.style.pointerEvents = 'none';
+                    bug.style.animation = 'none'; 
+
+                    bug.animate([
+                        { transform: 'translateY(0) scale(1)', opacity: 1 },
+                        { transform: 'translateY(300px) scale(0.8)', opacity: 0 }
+                    ], {
+                        duration: 1000,
+                        easing: 'ease-in',
+                        fill: 'forwards'
+                    });
+
+                    setTimeout(() => {
+                        bug.remove();
+                        const remainingBugs = document.querySelectorAll('.bug-element').length;
+                        if (remainingBugs === 0) {
+                            this.toolbox.resetActiveTool();
+                            if (typeof soundManager !== 'undefined') {
+                                soundManager.stop('bugCrawl');
+                            }
                         }
-                    }
-                }, 1000);
-            }
+                    }, 1000);
+                }
+            });
+
             return;
         }
 
@@ -356,16 +363,16 @@ export default class Task_3 {
             }, 50);
         }
 
-        const eatenLeavesCount = document.querySelectorAll('.eaten-leaf').length;
         const bugsCount = document.querySelectorAll('.bug-element').length;
-
         let stageTransitioned = false; 
 
-        if (this.growthStage === 0 && eatenLeavesCount > 0) {
+
+        if (this.growthStage === 0) {
 
         } else if (this.growthStage === 1 && bugsCount > 0) {
 
         } else {
+ 
             if (this.wateringProgress === undefined) {
                 this.wateringProgress = 0;
             }
@@ -381,20 +388,6 @@ export default class Task_3 {
                     
                     if (this.potImages[this.growthStage]) {
                         this.item.src = this.potImages[this.growthStage];
-                    }
-                    
-                    if (this.growthStage === 1) {
-                        const leavesContainer = document.getElementById('leaves-container');
-                        if (leavesContainer) leavesContainer.innerHTML = '';
-                        
-                        this.stopWateringEffect();
-                        if (this.wateringTimeout) {
-                            clearTimeout(this.wateringTimeout);
-                            this.wateringTimeout = null;
-                        }
-                        this.toolbox.resetActiveTool();
-                        
-                        this.spawnBugs();
                     }
                     
                     if (this.growthStage === 2) {
@@ -465,7 +458,6 @@ export default class Task_3 {
             setTimeout(() => popup.remove(), 400); 
         });
     }
-
 
     stopWateringEffect() {
         const activeTool = this.toolbox.getActiveTool();

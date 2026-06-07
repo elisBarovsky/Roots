@@ -14,18 +14,20 @@ export default class Level_2 {
     }
 
     init() {
-
         let backgroundImage = 'assets/images/porch_before.png';
+        let replayButtonHTML = ''; 
 
-         if (window.gameState && 
-            window.gameState.task1_completed && 
-            window.gameState.task2_completed && 
-            window.gameState.task3_completed) {
+        const allTasksCompleted = window.gameState && 
+                                  window.gameState.task1_completed && 
+                                  window.gameState.task2_completed && 
+                                  window.gameState.task3_completed;
+
+        if (allTasksCompleted) {
             backgroundImage = 'assets/images/porch_after.png';
             this.showStatusBanner("You started by taking care of someone else's plants\nSomewhere along the way, you learned how to take care of yourself too");
+            
+            replayButtonHTML = `<button class="game-btn replay-btn" id="replay-btn" style="position: absolute; top: 20px; left: 20px; z-index: 1000; padding: 10px 20px; font-size: 16px;"> Play Again</button>`;
         }
-        
-  
                               
         if (typeof soundManager !== 'undefined') {
             soundManager.playBackgroundMusic();
@@ -39,11 +41,11 @@ export default class Level_2 {
         const c2 = window.gameState.task2_completed ? 'completed' : '';
         const c3 = window.gameState.task3_completed ? 'completed' : '';
 
-         this.container.innerHTML = `
+        this.container.innerHTML = `
         <div class="hub-wrapper">
             <img src="${backgroundImage}" class="hub-bg" alt="Hub Room">
             
-            <img id="task1-item" src="assets/images/Task_1/items/${t1}" class="hub-item task1 ${c1}" style="bottom: 8%; left: 13%;">
+            ${replayButtonHTML} <img id="task1-item" src="assets/images/Task_1/items/${t1}" class="hub-item task1 ${c1}" style="bottom: 8%; left: 13%;">
             <img id="task2-item" src="assets/images/Task_2/items/${t2}" class="hub-item task2 ${c2}" style="bottom: 6%; left: 28%;">
             <img id="task3-item" src="assets/images/Task_3/items/${t3}" class="hub-item task3 ${c3}" style="bottom: 6%; right: 13%;">
         </div>
@@ -52,6 +54,22 @@ export default class Level_2 {
         this.t1 = document.getElementById('task1-item');
         this.t2 = document.getElementById('task2-item');
         this.t3 = document.getElementById('task3-item');
+        
+        if (allTasksCompleted) {
+            const replayBtn = document.getElementById('replay-btn');
+            if (replayBtn) {
+                replayBtn.addEventListener('mouseenter', this.onHover);
+                replayBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    if (typeof soundManager !== 'undefined') soundManager.play('clickSound');
+                    
+                    this.container.classList.add('fade-out');
+                    setTimeout(() => {
+                        window.location.reload(); 
+                    }, 1000);
+                });
+            }
+        }
 
         if (window.gameState.task1_just_completed) {
             if (this.t1) this.t1.classList.add('magic-item-win');
@@ -81,7 +99,6 @@ export default class Level_2 {
             this.t3.addEventListener('mouseenter', this.onHover);
         }
 
-       
         setTimeout(() => {
             this.container.classList.remove('fade-out');
         }, 50);
@@ -95,13 +112,8 @@ export default class Level_2 {
         
         // מופיע
         requestAnimationFrame(() => banner.classList.add('show'));
-        
-        // // נעלם אחרי 4 שניות
-        // setTimeout(() => {
-        //     banner.classList.remove('show');
-        //     setTimeout(() => banner.remove(), 500);
-        // }, 4000);
     }
+
     onHover() {
         if (typeof soundManager !== 'undefined') {
             soundManager.play('hoverSound'); 
@@ -154,6 +166,12 @@ export default class Level_2 {
         if (this.t3) {
             this.t3.removeEventListener('click', this.onTask3Click);
             this.t3.removeEventListener('mouseenter', this.onHover);
+        }
+        
+
+        const replayBtn = document.getElementById('replay-btn');
+        if (replayBtn) {
+             replayBtn.replaceWith(replayBtn.cloneNode(true));
         }
         
         this.container.innerHTML = '';

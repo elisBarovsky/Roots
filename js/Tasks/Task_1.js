@@ -212,7 +212,8 @@ export default class Task_1 {
             }, 50);
         }
 
-        if (this.isLightZone) {
+
+        if (this.isLightZone && this.growthStage === 1) {
             if (this.wateringProgress === undefined) {
                 this.wateringProgress = 0;
             }
@@ -222,44 +223,41 @@ export default class Task_1 {
             if (this.wateringProgress >= 100) {
                 this.wateringProgress = 0; 
 
-                if (this.growthStage < 2) {
-                    this.growthStage++;
-                    this.item.src = this.potImages[this.growthStage];
 
-                    if (this.growthStage === 2) {
-                        this.spawnConfetti();
-                        
-                        if (typeof soundManager !== 'undefined') {
-                            soundManager.play('stageComplete');
-                        }
+                this.growthStage = 2;
+                this.item.src = this.potImages[this.growthStage];
 
-                        this.showSuccessMessage();
-                        this.stopWateringEffect();
-                        if (this.wateringTimeout) {
-                            clearTimeout(this.wateringTimeout);
-                            this.wateringTimeout = null;
-                        }
+                this.spawnConfetti();
+                
+                if (typeof soundManager !== 'undefined') {
+                    soundManager.play('stageComplete');
+                }
 
-                        const toolboxContainer = document.querySelector('.toolbox-container');
-                        if (toolboxContainer) {
-                            toolboxContainer.classList.remove('expanded');
+                this.showSuccessMessage();
+                this.stopWateringEffect();
+                if (this.wateringTimeout) {
+                    clearTimeout(this.wateringTimeout);
+                    this.wateringTimeout = null;
+                }
 
-                            const toolboxIcon = toolboxContainer.querySelector('.toolbox-icon');
-                            if (toolboxIcon) {
-                                toolboxIcon.src = 'assets/images/Tools/toolbox_close.png'; 
-                            }
-                        }
+                const toolboxContainer = document.querySelector('.toolbox-container');
+                if (toolboxContainer) {
+                    toolboxContainer.classList.remove('expanded');
 
-                        if (this.toolbox && typeof this.toolbox.closeDrawer === 'function') {
-                             this.toolbox.closeDrawer();
-                        }
-
-                        if (!window.gameState) window.gameState = {};
-                        window.gameState.task1_completed = true;
-                        window.gameState.task1_just_completed = true;
-                        this.toolbox.resetActiveTool();
+                    const toolboxIcon = toolboxContainer.querySelector('.toolbox-icon');
+                    if (toolboxIcon) {
+                        toolboxIcon.src = 'assets/images/Tools/toolbox_close.png'; 
                     }
                 }
+
+                if (this.toolbox && typeof this.toolbox.closeDrawer === 'function') {
+                     this.toolbox.closeDrawer();
+                }
+
+                if (!window.gameState) window.gameState = {};
+                window.gameState.task1_completed = true;
+                window.gameState.task1_just_completed = true;
+                this.toolbox.resetActiveTool();
             }
         }
 
@@ -306,7 +304,8 @@ export default class Task_1 {
     }
 
    checkDiagonalZone(x, y, width, height) {
-        const diagonalLineY = (height / width) * x + (height / 3);
+
+        const diagonalLineY = (1.94 * (height / width) * x) - (0.4067 * height);
 
         const newIsLight = y < diagonalLineY;
         
@@ -316,7 +315,7 @@ export default class Task_1 {
         }
 
         const wasLightZone = this.isLightZone;
-        this.isLightZone = y < diagonalLineY; 
+        this.isLightZone = newIsLight; 
 
         if (this.isLightZone && !wasLightZone) {
             if (this.growthStage === 0) {

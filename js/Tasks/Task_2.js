@@ -353,11 +353,11 @@ export default class Task_2 {
 
     completeRopeTask() {
         this.ropePlaced = true;
-        this.growthStage = 0; 
+        this.growthStage = 1; 
         this.wateringProgress = 0; 
 
-        this.potContainer.innerHTML = `
-            <img id="magic-item" class="task2-pot-element final-pot-image stage-0" src="${this.potWithThreadImages[0]}" alt="Pot With Thread">
+     this.potContainer.innerHTML = `
+            <img id="magic-item" class="task2-pot-element final-pot-image stage-1" src="${this.potWithThreadImages[1]}" alt="Pot With Thread">
         `;
         
         this.item = document.getElementById('magic-item');
@@ -431,7 +431,6 @@ export default class Task_2 {
         const spoutX = clientX + 80; 
         const spoutY = clientY + 10;
 
-
         if (typeof soundManager !== 'undefined') {
             soundManager.play('water');
         }
@@ -442,50 +441,53 @@ export default class Task_2 {
             }, 50);
         }
 
-        if (this.wateringProgress === undefined) {
-            this.wateringProgress = 0;
-        }
 
-        this.wateringProgress += 25;
+        if (this.ropePlaced) {
+            if (this.wateringProgress === undefined) {
+                this.wateringProgress = 0;
+            }
 
-        if (this.wateringProgress >= 100) {
-            this.wateringProgress = 0; 
+            this.wateringProgress += 25;
 
-            if (this.growthStage < 2) {
-                this.growthStage++;
-                
-                if (this.ropePlaced) {
-                    this.item.src = this.potWithThreadImages[this.growthStage];
-                    this.item.className = `task2-pot-element final-pot-image stage-${this.growthStage}`;
-                } else {
-                    this.item.src = this.potImages[this.growthStage];
-                }
-                
-                if (this.growthStage === 2) {
-                    this.spawnConfetti();
-                    this.showSuccessMessage();
-                    if (typeof soundManager !== 'undefined') {
-                        soundManager.play('stageComplete');
+            if (this.wateringProgress >= 100) {
+                this.wateringProgress = 0; 
+
+                if (this.growthStage < 2) {
+                    this.growthStage++;
+                    
+                    if (this.ropePlaced) {
+                        this.item.src = this.potWithThreadImages[this.growthStage];
+                        this.item.className = `task2-pot-element final-pot-image stage-${this.growthStage}`;
+                    } else {
+                        this.item.src = this.potImages[this.growthStage];
                     }
-                    this.toolbox.resetActiveTool();
+                    
+                    if (this.growthStage === 2) {
+                        this.spawnConfetti();
+                        this.showSuccessMessage();
+                        if (typeof soundManager !== 'undefined') {
+                            soundManager.play('stageComplete');
+                        }
+                        this.toolbox.resetActiveTool();
 
-                    this.stopWateringEffect();
-                    if (this.wateringTimeout) {
-                        clearTimeout(this.wateringTimeout);
-                        this.wateringTimeout = null;
-                    }
+                        this.stopWateringEffect();
+                        if (this.wateringTimeout) {
+                            clearTimeout(this.wateringTimeout);
+                            this.wateringTimeout = null;
+                        }
 
-                    const toolboxContainer = document.querySelector('.toolbox-container');
-                    if (toolboxContainer) {
-                        toolboxContainer.classList.remove('expanded');
-                        const toolboxIcon = toolboxContainer.querySelector('.toolbox-icon');
-                        if (toolboxIcon) {
-                            toolboxIcon.src = 'assets/images/Tools/toolbox_close.png'; 
+                        const toolboxContainer = document.querySelector('.toolbox-container');
+                        if (toolboxContainer) {
+                            toolboxContainer.classList.remove('expanded');
+                            const toolboxIcon = toolboxContainer.querySelector('.toolbox-icon');
+                            if (toolboxIcon) {
+                                toolboxIcon.src = 'assets/images/Tools/toolbox_close.png'; 
+                            }
                         }
                     }
+                    
+                    this.checkTaskCompletion();
                 }
-                
-                this.checkTaskCompletion();
             }
         }
 

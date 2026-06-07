@@ -6,6 +6,7 @@ export default class Toolbox {
         this.activeDraggedTool = null;
         this.toolPlaceholder = null;
         this.toolRotation = 0;
+        this.isPickingUp = false; 
 
         this.selectTool = this.selectTool.bind(this);
         this.updateToolPosition = this.updateToolPosition.bind(this);
@@ -90,15 +91,17 @@ export default class Toolbox {
         });
 
         this.toolboxContainer.addEventListener('click', (e) => {
-            if (this.activeDraggedTool) {
-                e.stopPropagation();
+
+            e.stopPropagation(); 
+            if (this.activeDraggedTool && !this.isPickingUp) {
                 this.resetActiveTool();
             }
         });
 
         const tools = this.parentContainer.querySelectorAll('.tool-item');
         tools.forEach(tool => {
-            tool.addEventListener('click', (e) => this.selectTool(e, tool));
+
+            tool.addEventListener('pointerdown', (e) => this.selectTool(e, tool));
             
             tool.addEventListener('mouseenter', () => {
                 if (typeof soundManager !== 'undefined') soundManager.play('hoverSound');
@@ -221,6 +224,9 @@ export default class Toolbox {
    selectTool(e, tool) {
         e.preventDefault();
         e.stopPropagation();
+
+        this.isPickingUp = true;
+        setTimeout(() => this.isPickingUp = false, 200);
 
         if (this.activeDraggedTool) {
             this.resetActiveTool();

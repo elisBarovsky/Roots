@@ -28,7 +28,6 @@ button {
     letter-spacing: 1px;
 }
 
-
 .game-btn:hover {
     background-color: #a3e635; 
     transform: translateY(-2px); 
@@ -389,6 +388,12 @@ button {
 img[src*="spray"].tool-item.dragging,
 img[src*="Spray"].tool-item.dragging {
     transform: translate(-50%, -10%) scale(1.1) !important; 
+}
+
+img[src*="scissors"].tool-item.dragging,
+img[src*="Scissors"].tool-item.dragging {
+    margin-left: -50px !important; 
+    margin-top: 10px !important; 
 }
 
 .tool-slot {
