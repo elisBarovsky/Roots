@@ -22,7 +22,7 @@ Roots is a gardening and puzzle-solving game. Players are challenged to nurture 
 * No special installation is required – the game runs directly in your browser.
 
 ### Instructions
-1. Download all files from this repository, or visit the link here: [https://elisbaro.itch.io/roots](https://elisbarovsky.github.io/Roots/).
+1. Download all files from this repository, or visit the link [here](https://elisbarovsky.github.io/Roots/).
 2. Open the `index.html` file in your browser.
 3. Enjoy the game!
 
