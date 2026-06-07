@@ -15,6 +15,18 @@ export default class Level_2 {
 
     init() {
 
+        let backgroundImage = 'assets/images/porch_before.png';
+
+         if (window.gameState && 
+            window.gameState.task1_completed && 
+            window.gameState.task2_completed && 
+            window.gameState.task3_completed) {
+            backgroundImage = 'assets/images/porch_after.png';
+            this.showStatusBanner("You started by taking care of someone else's plants\nSomewhere along the way, you learned how to take care of yourself too");
+        }
+        
+  
+                              
         if (typeof soundManager !== 'undefined') {
             soundManager.playBackgroundMusic();
         }
@@ -29,11 +41,11 @@ export default class Level_2 {
 
          this.container.innerHTML = `
         <div class="hub-wrapper">
-            <img src="assets/images/porch.png" class="hub-bg" alt="Hub Room">
+            <img src="${backgroundImage}" class="hub-bg" alt="Hub Room">
             
-            <img id="task1-item" src="assets/images/Task_1/items/${t1}" class="hub-item task1 ${c1}" style="bottom: 15%; left: 13%;">
-            <img id="task2-item" src="assets/images/Task_2/items/${t2}" class="hub-item task2 ${c2}" style="bottom: 14%; left: 28%;">
-            <img id="task3-item" src="assets/images/Task_3/items/${t3}" class="hub-item task3 ${c3}" style="bottom: 13%; right: 13%;">
+            <img id="task1-item" src="assets/images/Task_1/items/${t1}" class="hub-item task1 ${c1}" style="bottom: 8%; left: 13%;">
+            <img id="task2-item" src="assets/images/Task_2/items/${t2}" class="hub-item task2 ${c2}" style="bottom: 6%; left: 28%;">
+            <img id="task3-item" src="assets/images/Task_3/items/${t3}" class="hub-item task3 ${c3}" style="bottom: 6%; right: 13%;">
         </div>
         `;
 
@@ -69,13 +81,7 @@ export default class Level_2 {
             this.t3.addEventListener('mouseenter', this.onHover);
         }
 
-        if (window.gameState && 
-            window.gameState.task1_completed && 
-            window.gameState.task2_completed && 
-            window.gameState.task3_completed) {
-        
-            this.showStatusBanner("You started by taking care of someone else's plants\nSomewhere along the way, you learned how to take care of yourself too");
-        }
+       
         setTimeout(() => {
             this.container.classList.remove('fade-out');
         }, 50);
