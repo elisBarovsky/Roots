@@ -8,17 +8,21 @@ export default class Level1 {
         this.startX = 0;
         this.scrollLeft = 0;
         this.buttonRevealed = false;
+        this.hasStartedScrolling = false; 
 
         this.onMouseDown = this.onMouseDown.bind(this);
         this.onMouseLeave = this.onMouseLeave.bind(this);
         this.onMouseUp = this.onMouseUp.bind(this);
         this.onMouseMove = this.onMouseMove.bind(this);
         this.onNextClick = this.onNextClick.bind(this);
+        this.onHover = this.onHover.bind(this);
     }
 
     init() {
         this.container.innerHTML = `
             <div class="level-wrapper">
+                <div id="scroll-hint" class="scroll-hint">Scroll to the right ➔</div>
+
                 <div id="game-viewport" class="viewport">
                     <div class="wide-level-content">
                         <img src="assets/images/Untitled_Artwork.png" alt="Level 1">
@@ -30,6 +34,7 @@ export default class Level1 {
         `;
         this.viewport = document.getElementById('game-viewport');
         this.nextBtn = document.getElementById('next-level-btn');
+        this.scrollHint = document.getElementById('scroll-hint'); 
 
         this.viewport.addEventListener('mousedown', this.onMouseDown);
         this.viewport.addEventListener('mouseleave', this.onMouseLeave);
@@ -51,6 +56,7 @@ export default class Level1 {
             soundManager.play('hoverSound'); 
         }
     }
+
     onMouseLeave() {
         this.isDown = false;
         this.viewport.classList.remove('active');
@@ -67,6 +73,17 @@ export default class Level1 {
         const x = e.pageX - this.viewport.offsetLeft;
         const walk = (x - this.startX) * 1.5; 
         this.viewport.scrollLeft = this.scrollLeft - walk;
+
+        if (!this.hasStartedScrolling && this.viewport.scrollLeft > 20) {
+            this.hasStartedScrolling = true;
+            if (this.scrollHint) {
+                this.scrollHint.classList.add('hidden'); 
+                
+                setTimeout(() => {
+                    if (this.scrollHint) this.scrollHint.remove();
+                }, 500);
+            }
+        }
 
         this.checkEndReached();
     }
@@ -96,8 +113,6 @@ export default class Level1 {
             const level2 = new Level_2(this.container);
             level2.init();
 
-            //this.container.classList.remove('fade-out');
-
         }, 1000);
     }
 
@@ -107,6 +122,7 @@ export default class Level1 {
         this.viewport.removeEventListener('mouseup', this.onMouseUp);
         this.viewport.removeEventListener('mousemove', this.onMouseMove);
         this.nextBtn.removeEventListener('click', this.onNextClick);
+        this.nextBtn.removeEventListener('mouseenter', this.onHover);
         this.container.innerHTML = '';
     }
 }

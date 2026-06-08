@@ -827,3 +827,31 @@ img[src*="Scissors"].tool-item.dragging {
 .status-banner.show {
     transform: translateX(-50%) translateY(0); 
 }
+
+.scroll-hint {
+    position: absolute;
+    top: 30px;
+    left: 30px;
+    background-color: rgba(255, 255, 255, 0.9);
+    border: 3px solid #84cc16;
+    color: #4d7c0f;
+    padding: 10px 25px;
+    border-radius: 20px;
+    font-size: 1.5rem;
+    font-weight: bold;
+    z-index: 100;
+    pointer-events: none;
+    transition: opacity 0.5s ease;
+    animation: bounceRight 1.5s infinite;
+    font-family: inherit;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+}
+
+.scroll-hint.hidden {
+    opacity: 0;
+}
+
+@keyframes bounceRight {
+    0%, 100% { transform: translateX(0); }
+    50% { transform: translateX(15px); }
+}
