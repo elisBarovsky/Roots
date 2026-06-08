@@ -5,9 +5,11 @@ export default class Main_Menu {
     constructor(container) {
         this.container = container;
         this.onStartClick = this.onStartClick.bind(this);
+        this.onHover = this.onHover.bind(this);
     }
 
     init() {
+
         this.container.innerHTML = `
             <div class="main-menu-wrapper">
                 <h1 class="game-title">Roots</h1>
@@ -40,6 +42,7 @@ export default class Main_Menu {
 
     destroy() {
         this.startBtn.removeEventListener('click', this.onStartClick);
+        this.startBtn.removeEventListener('mouseenter', this.onHover);
         this.container.innerHTML = '';
     }
 }
