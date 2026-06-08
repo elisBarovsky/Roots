@@ -34,4 +34,4 @@ Roots is a gardening and puzzle-solving game. Players are challenged to nurture 
 * **HTML5**
 * **Howler.js** (for audio management)
 
-* All game graphics, character sprites, and UI elements were custom-drawn by Hader Har-Tzvi, specifically for this project.
+* All game graphics, character sprites, and UI elements were custom-drawn by Hadar Har-Tzvi, specifically for this project.
