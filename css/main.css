@@ -6,6 +6,8 @@ body, html {
     background-color: #000;
     overflow: hidden; 
     font-family: 'Fredoka', sans-serif;
+    user-select: none;
+    -webkit-user-select: none; 
 }
 
 

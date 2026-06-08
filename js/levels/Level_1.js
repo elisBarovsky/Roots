@@ -21,7 +21,7 @@ export default class Level1 {
     init() {
         this.container.innerHTML = `
             <div class="level-wrapper">
-                <div id="scroll-hint" class="scroll-hint">Scroll to the right ➔</div>
+                <div id="scroll-hint" class="scroll-hint">Drag to the right ➔</div>
 
                 <div id="game-viewport" class="viewport">
                     <div class="wide-level-content">
